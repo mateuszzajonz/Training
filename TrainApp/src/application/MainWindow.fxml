@@ -5,6 +5,7 @@
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -12,22 +13,25 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 
 <AnchorPane prefHeight="700.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Controller">
    <children>
       <AnchorPane fx:id="Settings_App" prefHeight="700.0" prefWidth="400.0">
          <children>
-            <ImageView fx:id="img" fitHeight="146.0" fitWidth="163.0" layoutX="119.0" layoutY="66.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="img" fitHeight="132.0" fitWidth="165.0" layoutX="119.0" layoutY="76.0" onMousePressed="#ChooseImage" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@profilowe.png" />
                </image>
             </ImageView>
-            <TextField layoutX="36.0" layoutY="243.0" prefHeight="40.0" prefWidth="149.0" promptText="Imię" AnchorPane.leftAnchor="41.0" AnchorPane.rightAnchor="215.0" />
-            <TextField layoutX="219.0" layoutY="243.0" prefHeight="40.0" prefWidth="144.0" promptText="Nazwisko" AnchorPane.rightAnchor="41.0" />
-            <DatePicker layoutX="41.0" layoutY="337.0" prefHeight="40.0" prefWidth="144.0" />
-            <TextField layoutX="41.0" layoutY="290.0" prefHeight="40.0" prefWidth="144.0" promptText="Waga" />
-            <TextField layoutX="216.0" layoutY="290.0" prefHeight="40.0" prefWidth="144.0" promptText="Wzrost" />
-            <ComboBox fx:id="comboBox" layoutX="216.0" layoutY="337.0" prefHeight="40.0" prefWidth="144.0" promptText="Płeć" />
+            <TextField fx:id="imie" editable="false" layoutX="36.0" layoutY="243.0" prefHeight="40.0" prefWidth="149.0" promptText="Imię" AnchorPane.leftAnchor="41.0" AnchorPane.rightAnchor="215.0" />
+            <TextField fx:id="nazwisko" layoutX="219.0" layoutY="243.0" prefHeight="40.0" prefWidth="144.0" promptText="Nazwisko" AnchorPane.rightAnchor="41.0" />
+            <DatePicker fx:id="data" layoutX="41.0" layoutY="337.0" prefHeight="40.0" prefWidth="144.0" />
+            <TextField fx:id="waga" layoutX="41.0" layoutY="290.0" prefHeight="40.0" prefWidth="144.0" promptText="Waga" />
+            <TextField fx:id="wzrost" layoutX="216.0" layoutY="290.0" prefHeight="40.0" prefWidth="144.0" promptText="Wzrost" />
+            <ComboBox fx:id="plec" editable="true" layoutX="216.0" layoutY="337.0" prefHeight="40.0" prefWidth="144.0" promptText="Płeć" />
+            <Button fx:id="Save_Click" layoutX="41.0" layoutY="384.0" mnemonicParsing="false" onAction="#SaveClick" prefHeight="40.0" prefWidth="320.0" text="Zapisz" />
+            <Button fx:id="Edit_Click" layoutX="41.0" layoutY="384.0" mnemonicParsing="false" onAction="#EditClick" prefHeight="40.0" prefWidth="320.0" text="Edytuj" />
          </children>
       </AnchorPane>
       <AnchorPane fx:id="Training_App" prefHeight="700.0" prefWidth="400.0" visible="false" />
@@ -42,6 +46,32 @@
             <Label text="MENU" />
          </graphic>
       </Button>
+      <ScrollPane fx:id="scrollPane" layoutX="200.0" prefHeight="700.0" prefWidth="200.0" visible="false">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="75.0">
+               <children>
+                  <VBox prefHeight="200.0" prefWidth="100.0">
+                     <children>
+                        <ImageView fitHeight="75.0" fitWidth="75.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@Images/1.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fitHeight="75.0" fitWidth="75.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@Images/2.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fitHeight="75.0" fitWidth="75.0" pickOnBounds="true" preserveRatio="true" />
+                        <ImageView fitHeight="75.0" fitWidth="75.0" pickOnBounds="true" preserveRatio="true" />
+                        <ImageView fitHeight="75.0" fitWidth="75.0" pickOnBounds="true" preserveRatio="true" />
+                        <ImageView fitHeight="75.0" fitWidth="75.0" pickOnBounds="true" preserveRatio="true" />
+                     </children>
+                  </VBox>
+               </children>
+            </AnchorPane>
+        </content>
+      </ScrollPane>
       <GridPane fx:id="Side_Menu_App" prefHeight="700.0" prefWidth="200.0" visible="false">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />

@@ -16,22 +16,18 @@ import javafx.scene.layout.HBox;
 
 public class Main extends Application {
 
-	
 	@Override
 	public void start(Stage primaryStage){
 
-
 		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("MainWindow.fxml"));
+	        FXMLLoader loader = new FXMLLoader(getClass().getResource("MainWindow.fxml"));
 	        Parent root = loader.load();
 	        Controller myController = loader.getController();
+
 			Scene scene = new Scene(root,400,700);
 			primaryStage.setScene(scene);
 			primaryStage.show();
-			myController.comboBox.getItems().addAll(
-					"Mê¿czyzna",
-					"Kobieta"
-		);
+			myController.loadOnStart();
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
