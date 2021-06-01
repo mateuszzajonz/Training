@@ -11,6 +11,7 @@ public class Controller {
 	
 	public void start(Stage stage) {
 System.out.print("Hello World");
+System.out.print("Hello World");
     }
 
 	
