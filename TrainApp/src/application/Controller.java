@@ -1,6 +1,8 @@
 package application;
 
 import javafx.fxml.FXML;
+
+import javafx.scene.control.ComboBox;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import javafx.scene.control.Button;
@@ -17,6 +19,7 @@ public class Controller {
     public ListView Main_ListView;
     public Button Side_Menu_btn;
     public GridPane Side_Menu_App;
+    public ComboBox comboBox;
 	
 	public void start(Stage stage) {
 
