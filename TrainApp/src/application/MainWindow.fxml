@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
@@ -14,27 +16,13 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
 
 <AnchorPane prefHeight="700.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Controller">
    <children>
-      <AnchorPane fx:id="Settings_App" prefHeight="700.0" prefWidth="400.0">
-         <children>
-            <ImageView fx:id="img" fitHeight="132.0" fitWidth="165.0" layoutX="119.0" layoutY="76.0" onMousePressed="#ChooseImage" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@profilowe.png" />
-               </image>
-            </ImageView>
-            <TextField fx:id="imie" editable="false" layoutX="36.0" layoutY="243.0" prefHeight="40.0" prefWidth="149.0" promptText="Imię" AnchorPane.leftAnchor="41.0" AnchorPane.rightAnchor="215.0" />
-            <TextField fx:id="nazwisko" layoutX="219.0" layoutY="243.0" prefHeight="40.0" prefWidth="144.0" promptText="Nazwisko" AnchorPane.rightAnchor="41.0" />
-            <DatePicker fx:id="data" layoutX="41.0" layoutY="337.0" prefHeight="40.0" prefWidth="144.0" />
-            <TextField fx:id="waga" layoutX="41.0" layoutY="290.0" prefHeight="40.0" prefWidth="144.0" promptText="Waga" />
-            <TextField fx:id="wzrost" layoutX="216.0" layoutY="290.0" prefHeight="40.0" prefWidth="144.0" promptText="Wzrost" />
-            <ComboBox fx:id="plec" editable="true" layoutX="216.0" layoutY="337.0" prefHeight="40.0" prefWidth="144.0" promptText="Płeć" />
-            <Button fx:id="Save_Click" layoutX="41.0" layoutY="384.0" mnemonicParsing="false" onAction="#SaveClick" prefHeight="40.0" prefWidth="320.0" text="Zapisz" />
-            <Button fx:id="Edit_Click" layoutX="41.0" layoutY="384.0" mnemonicParsing="false" onAction="#EditClick" prefHeight="40.0" prefWidth="320.0" text="Edytuj" />
-         </children>
-      </AnchorPane>
       <AnchorPane fx:id="Training_App" prefHeight="700.0" prefWidth="400.0" visible="false" />
+      <AnchorPane fx:id="Settings_App" prefHeight="700.0" prefWidth="400.0" />
       <AnchorPane fx:id="Main_App" prefHeight="700.0" prefWidth="400.0" visible="false">
          <children>
             <ImageView fx:id="Main_Image" fitHeight="117.0" fitWidth="131.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="135.0" AnchorPane.rightAnchor="134.0" AnchorPane.topAnchor="106.0" />
@@ -46,6 +34,164 @@
             <Label text="MENU" />
          </graphic>
       </Button>
+      <AnchorPane fx:id="Training_App" prefHeight="700.0" prefWidth="400.0" visible="false">
+         <children>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="621.0" layoutX="19.0" layoutY="65.0" stroke="BLACK" strokeType="INSIDE" width="363.0" AnchorPane.leftAnchor="19.0" AnchorPane.rightAnchor="18.0" AnchorPane.topAnchor="65.0" />
+            <Label layoutX="113.0" layoutY="118.0" text="TRAINING" AnchorPane.leftAnchor="113.0" AnchorPane.rightAnchor="113.0" AnchorPane.topAnchor="118.0">
+               <font>
+                  <Font name="Arial Bold" size="36.0" />
+               </font>
+            </Label>
+            <Label layoutX="125.0" layoutY="76.0" text="CREATE" AnchorPane.leftAnchor="125.0" AnchorPane.rightAnchor="126.0" AnchorPane.topAnchor="76.0">
+               <font>
+                  <Font name="Arial Bold" size="36.0" />
+               </font>
+            </Label>
+            <GridPane layoutX="40.0" layoutY="160.0" prefHeight="496.0" prefWidth="320.0" AnchorPane.leftAnchor="40.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="160.0">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <CheckBox fx:id="chbox_legs_CT" mnemonicParsing="false" text="LEGS">
+                     <font>
+                        <Font name="System Italic" size="16.0" />
+                     </font>
+                  </CheckBox>
+                  <CheckBox fx:id="chbox_back_CT" layoutX="10.0" layoutY="29.0" mnemonicParsing="false" text="BACK" GridPane.rowIndex="1">
+                     <font>
+                        <Font name="System Italic" size="16.0" />
+                     </font>
+                  </CheckBox>
+                  <CheckBox fx:id="chbox_chest_CT" layoutX="10.0" layoutY="29.0" mnemonicParsing="false" text="CHEST" GridPane.rowIndex="2">
+                     <font>
+                        <Font name="System Italic" size="16.0" />
+                     </font>
+                  </CheckBox>
+                  <CheckBox fx:id="chbox_shoulders_CT" layoutX="10.0" layoutY="29.0" mnemonicParsing="false" text="SHOULDERS" GridPane.rowIndex="3">
+                     <font>
+                        <Font name="System Italic" size="16.0" />
+                     </font>
+                  </CheckBox>
+                  <CheckBox fx:id="chbox_arms_CT" layoutX="10.0" layoutY="29.0" mnemonicParsing="false" text="ARMS" GridPane.rowIndex="4">
+                     <font>
+                        <Font name="System Italic" size="16.0" />
+                     </font>
+                  </CheckBox>
+                  <CheckBox fx:id="chbox_abs_CT" layoutX="10.0" layoutY="29.0" mnemonicParsing="false" text="ABS" GridPane.rowIndex="5">
+                     <font>
+                        <Font name="System Italic" size="16.0" />
+                     </font>
+                  </CheckBox>
+                  <Label text="PREFERED TIME" GridPane.rowIndex="6" GridPane.rowSpan="2">
+                     <font>
+                        <Font name="System Italic" size="16.0" />
+                     </font>
+                  </Label>
+                  <GridPane GridPane.columnIndex="1" GridPane.rowIndex="6" GridPane.rowSpan="2">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" />
+                      <ColumnConstraints hgrow="SOMETIMES" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints vgrow="SOMETIMES" />
+                      <RowConstraints vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <Label text="HOURS" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="10.0" layoutY="27.0" text="MINUTES" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                        <TextField fx:id="txtbox_hour_CT" GridPane.rowIndex="1">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                           <GridPane.margin>
+                              <Insets right="5.0" />
+                           </GridPane.margin>
+                        </TextField>
+                        <TextField fx:id="txtbox_minute_CT" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                           <GridPane.margin>
+                              <Insets left="5.0" />
+                           </GridPane.margin>
+                        </TextField>
+                     </children>
+                  </GridPane>
+                  <CheckBox fx:id="chbox_strength_CT" layoutX="10.0" layoutY="227.0" mnemonicParsing="false" text="STRENGTH" GridPane.rowIndex="8">
+                     <font>
+                        <Font name="System Italic" size="16.0" />
+                     </font>
+                  </CheckBox>
+                  <CheckBox fx:id="chbox_endurance_CT" layoutX="10.0" layoutY="19.0" mnemonicParsing="false" text="ENDURANCE" GridPane.rowIndex="9">
+                     <font>
+                        <Font name="System Italic" size="16.0" />
+                     </font>
+                  </CheckBox>
+                  <CheckBox fx:id="chbox_muscle_CT" layoutX="10.0" layoutY="19.0" mnemonicParsing="false" text="MUSCLE" GridPane.rowIndex="10">
+                     <font>
+                        <Font name="System Italic" size="16.0" />
+                     </font>
+                  </CheckBox>
+                  <Button fx:id="btn_CT" mnemonicParsing="false" onAction="#Create_Training" text="CREATE" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="11" GridPane.valignment="CENTER">
+                     <font>
+                        <Font name="System Bold" size="20.0" />
+                     </font>
+                  </Button>
+               </children>
+            </GridPane>
+         </children>
+      </AnchorPane>
+      <Button fx:id="Side_Menu_btn" mnemonicParsing="false" onAction="#Open_Side_Menu" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="14.0">
+         <graphic>
+            <Label text="MENU">
+               <font>
+                  <Font name="Arial Bold" size="14.0" />
+               </font>
+            </Label>
+         </graphic>
+         <font>
+            <Font name="Arial" size="18.0" />
+         </font>
+      </Button>
+      <AnchorPane fx:id="Settings_App" prefHeight="700.0" prefWidth="400.0">
+         <children>
+            <ImageView fx:id="img" fitHeight="150.0" fitWidth="200.0" layoutX="100.0" layoutY="60.0" onMousePressed="#ChooseImage" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@profilowe.png" />
+               </image></ImageView>
+            <TextField fx:id="imie" editable="false" layoutX="36.0" layoutY="243.0" prefHeight="40.0" prefWidth="149.0" promptText="Imię" AnchorPane.leftAnchor="41.0" AnchorPane.rightAnchor="215.0" />
+            <TextField fx:id="nazwisko" layoutX="219.0" layoutY="243.0" prefHeight="40.0" prefWidth="144.0" promptText="Nazwisko" AnchorPane.rightAnchor="41.0" />
+            <TextField fx:id="waga" layoutX="41.0" layoutY="290.0" prefHeight="40.0" prefWidth="144.0" promptText="Waga" />
+            <TextField fx:id="wzrost" layoutX="216.0" layoutY="290.0" prefHeight="40.0" prefWidth="144.0" promptText="Wzrost" />
+            <Button fx:id="Save_Click" layoutX="41.0" layoutY="384.0" mnemonicParsing="false" onAction="#SaveClick" prefHeight="40.0" prefWidth="320.0" text="Zapisz" />
+            <Button fx:id="Edit_Click" layoutX="41.0" layoutY="384.0" mnemonicParsing="false" onAction="#EditClick" prefHeight="40.0" prefWidth="320.0" text="Edytuj" />
+            <DatePicker fx:id="data" layoutX="41.0" layoutY="338.0" prefHeight="40.0" prefWidth="144.0" />
+            <ComboBox fx:id="plec" layoutX="218.0" layoutY="338.0" prefHeight="40.0" prefWidth="144.0" />
+         </children>
+      </AnchorPane>
       <ScrollPane fx:id="scrollPane" layoutX="222.0" prefHeight="700.0" prefWidth="178.0" visible="false">
         <content>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="700.0" prefWidth="152.0">
@@ -68,21 +214,5 @@
             </AnchorPane>
         </content>
       </ScrollPane>
-      <GridPane fx:id="Side_Menu_App" prefHeight="700.0" prefWidth="200.0" visible="false">
-        <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-        </columnConstraints>
-        <rowConstraints>
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-        </rowConstraints>
-      </GridPane>
    </children>
 </AnchorPane>
