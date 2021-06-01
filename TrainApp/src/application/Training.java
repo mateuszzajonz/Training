@@ -7,7 +7,8 @@ public class Training
 {
 	List<String> listOfExercises = new LinkedList<>();
 
-	public void AddExercise(){
+	public void AddExercise()
+	{
 	    listOfExercises.add("LEGS,BACK SQUAT");
 	    listOfExercises.add("LEGS,BULGARIAN SQUAT");
 	    listOfExercises.add("LEGS,DEADLIFT");
