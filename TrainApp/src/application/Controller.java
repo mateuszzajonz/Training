@@ -10,8 +10,7 @@ public class Controller {
 	ImageView img;
 	
 	public void start(Stage stage) {
-System.out.print("Hello World");
-System.out.print("Hello World");
+
     }
 
 	
