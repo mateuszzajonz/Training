@@ -46,26 +46,22 @@
             <Label text="MENU" />
          </graphic>
       </Button>
-      <ScrollPane fx:id="scrollPane" layoutX="200.0" prefHeight="700.0" prefWidth="200.0" visible="false">
+      <ScrollPane fx:id="scrollPane" layoutX="222.0" prefHeight="700.0" prefWidth="178.0" visible="false">
         <content>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="75.0">
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="700.0" prefWidth="152.0">
                <children>
-                  <VBox prefHeight="200.0" prefWidth="100.0">
+                  <VBox layoutX="1.0" prefHeight="700.0" prefWidth="165.0">
                      <children>
-                        <ImageView fitHeight="75.0" fitWidth="75.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="i1" fitHeight="145.0" fitWidth="145.0" onMouseClicked="#ChooseImageExit" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@Images/1.png" />
                            </image>
                         </ImageView>
-                        <ImageView fitHeight="75.0" fitWidth="75.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitHeight="145.0" fitWidth="145.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@Images/2.png" />
                            </image>
                         </ImageView>
-                        <ImageView fitHeight="75.0" fitWidth="75.0" pickOnBounds="true" preserveRatio="true" />
-                        <ImageView fitHeight="75.0" fitWidth="75.0" pickOnBounds="true" preserveRatio="true" />
-                        <ImageView fitHeight="75.0" fitWidth="75.0" pickOnBounds="true" preserveRatio="true" />
-                        <ImageView fitHeight="75.0" fitWidth="75.0" pickOnBounds="true" preserveRatio="true" />
                      </children>
                   </VBox>
                </children>
