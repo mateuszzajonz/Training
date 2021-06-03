@@ -7,6 +7,7 @@
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
@@ -133,21 +134,21 @@
                         </TextField>
                      </children>
                   </GridPane>
-                  <CheckBox fx:id="chbox_strength_CT" layoutX="10.0" layoutY="227.0" mnemonicParsing="false" text="STRENGTH" GridPane.rowIndex="8">
+                  <RadioButton fx:id="radioBtn_strength_CT" mnemonicParsing="false" text="STRENGTH" GridPane.rowIndex="8">
                      <font>
                         <Font name="System Italic" size="16.0" />
                      </font>
-                  </CheckBox>
-                  <CheckBox fx:id="chbox_endurance_CT" layoutX="10.0" layoutY="19.0" mnemonicParsing="false" text="ENDURANCE" GridPane.rowIndex="9">
+                  </RadioButton>
+                  <RadioButton fx:id="radioBtn_muscle_CT" layoutX="10.0" layoutY="23.0" mnemonicParsing="false" text="MUSCLE" GridPane.rowIndex="9">
                      <font>
                         <Font name="System Italic" size="16.0" />
                      </font>
-                  </CheckBox>
-                  <CheckBox fx:id="chbox_muscle_CT" layoutX="10.0" layoutY="19.0" mnemonicParsing="false" text="MUSCLE" GridPane.rowIndex="10">
+                  </RadioButton>
+                  <RadioButton fx:id="radioBtn_endurance_CT" layoutX="10.0" layoutY="23.0" mnemonicParsing="false" text="ENDURANCE" GridPane.rowIndex="10">
                      <font>
                         <Font name="System Italic" size="16.0" />
                      </font>
-                  </CheckBox>
+                  </RadioButton>
                   <Button fx:id="btn_CT" mnemonicParsing="false" onAction="#Create_Training" text="CREATE" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="11" GridPane.valignment="CENTER">
                      <font>
                         <Font name="System Bold" size="20.0" />

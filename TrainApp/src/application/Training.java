@@ -1,8 +1,5 @@
 package application;
 
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-
 import java.util.LinkedList;
 import java.util.List;
 

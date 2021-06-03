@@ -18,8 +18,10 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.control.CheckBox;
@@ -47,9 +49,6 @@ public class Controller {
     public ScrollPane scrollPane;
 
     public Button btn_CT;
-    public CheckBox chbox_muscle_CT;
-    public CheckBox chbox_endurance_CT;
-    public CheckBox chbox_strength_CT;
     public TextField txtbox_minute_CT;
     public TextField txtbox_hour_CT;
     public CheckBox chbox_abs_CT;
@@ -58,7 +57,10 @@ public class Controller {
     public CheckBox chbox_chest_CT;
     public CheckBox chbox_back_CT;
     public CheckBox chbox_legs_CT;
-
+    public RadioButton radioBtn_muscle_CT;
+    public RadioButton radioBtn_endurance_CT;
+    public RadioButton radioBtn_strength_CT;
+    
 	public void start(ActionEvent event) {
 		
     }
@@ -122,6 +124,10 @@ public class Controller {
             
             Save_Click.setVisible(false);
             
+			ToggleGroup radioTrainGroup = new ToggleGroup();
+			radioBtn_strength_CT.setToggleGroup(radioTrainGroup);
+			radioBtn_endurance_CT.setToggleGroup(radioTrainGroup);
+			radioBtn_muscle_CT.setToggleGroup(radioTrainGroup);
 	}
 	private void loadProfil() {
 		try {
@@ -179,7 +185,7 @@ public class Controller {
 	}
 	
     public void Create_Training()
-    {
+    {   	
         Training_App.setVisible(true);
         Settings_App.setVisible(false);
         Main_App.setVisible(false);
