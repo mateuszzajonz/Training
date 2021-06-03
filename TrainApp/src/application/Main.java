@@ -16,6 +16,8 @@ import javafx.scene.layout.HBox;
 
 public class Main extends Application {
 
+    public static Controller myConrollerToPass;
+    
 	@Override
 	public void start(Stage primaryStage){
 
@@ -23,7 +25,8 @@ public class Main extends Application {
 	        FXMLLoader loader = new FXMLLoader(getClass().getResource("MainWindow.fxml"));
 	        Parent root = loader.load();
 	        Controller myController = loader.getController();
-
+	        myConrollerToPass = myController;
+	        
 			Scene scene = new Scene(root,400,700);
 			primaryStage.setScene(scene);
 			primaryStage.show();

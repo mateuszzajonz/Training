@@ -14,6 +14,8 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
@@ -56,7 +58,6 @@ public class Controller {
     public CheckBox chbox_chest_CT;
     public CheckBox chbox_back_CT;
     public CheckBox chbox_legs_CT;
-    public ComboBox comboBox;
 
 	public void start(ActionEvent event) {
 		
@@ -179,7 +180,37 @@ public class Controller {
 	
     public void Create_Training()
     {
-    	
+        Training_App.setVisible(true);
+        Settings_App.setVisible(false);
+        Main_App.setVisible(false);
+        Training trainCreate = new Training();
+
+        try
+        {
+        	int time = Integer.parseInt(txtbox_hour_CT.getText())*60+ Integer.parseInt(txtbox_minute_CT.getText());
+            if (trainCreate.CheckBoxCountTraining() > 0)
+            {
+            	if(time>30)
+            		trainCreate.Generate_Training(time, true);
+            	else
+            		trainCreate.Generate_Training(time, false);
+            }
+            else
+            {
+            	Alert alert = new Alert(AlertType.INFORMATION);
+            	alert.setTitle("Informacja dla U¯YTKOWNIKA");
+            	alert.setHeaderText(null);
+            	alert.setContentText("Trudno zrobiæ trening bez æwiczeñ. \nProszê wybierz co chcesz dzisiaj trenowaæ.");
+            	alert.showAndWait();
+            }
+        } catch (Exception e)
+        {
+        	Alert alert = new Alert(AlertType.INFORMATION);
+        	alert.setTitle("Informacja dla U¯YTKOWNIKA");
+        	alert.setHeaderText(null);
+        	alert.setContentText("Przepraszamy. Coœ posz³o nie tak. Spróbuj jeszcze raz.");
+        	alert.showAndWait();
+        }
     }
     
     public void Open_Side_Menu()

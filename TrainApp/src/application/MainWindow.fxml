@@ -21,20 +21,13 @@
 
 <AnchorPane prefHeight="700.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Controller">
    <children>
-      <AnchorPane fx:id="Training_App" prefHeight="700.0" prefWidth="400.0" visible="false" />
-      <AnchorPane fx:id="Settings_App" prefHeight="700.0" prefWidth="400.0" />
       <AnchorPane fx:id="Main_App" prefHeight="700.0" prefWidth="400.0" visible="false">
          <children>
             <ImageView fx:id="Main_Image" fitHeight="117.0" fitWidth="131.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="135.0" AnchorPane.rightAnchor="134.0" AnchorPane.topAnchor="106.0" />
             <ListView fx:id="Main_ListView" layoutX="57.0" layoutY="271.0" prefHeight="329.0" prefWidth="286.0" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="57.0" AnchorPane.rightAnchor="57.0" AnchorPane.topAnchor="271.0" />
          </children>
       </AnchorPane>
-      <Button fx:id="Side_Menu_btn" mnemonicParsing="false" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="14.0">
-         <graphic>
-            <Label text="MENU" />
-         </graphic>
-      </Button>
-      <AnchorPane fx:id="Training_App" prefHeight="700.0" prefWidth="400.0" visible="false">
+      <AnchorPane fx:id="Training_App" prefHeight="700.0" prefWidth="400.0">
          <children>
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="621.0" layoutX="19.0" layoutY="65.0" stroke="BLACK" strokeType="INSIDE" width="363.0" AnchorPane.leftAnchor="19.0" AnchorPane.rightAnchor="18.0" AnchorPane.topAnchor="65.0" />
             <Label layoutX="113.0" layoutY="118.0" text="TRAINING" AnchorPane.leftAnchor="113.0" AnchorPane.rightAnchor="113.0" AnchorPane.topAnchor="118.0">
@@ -176,7 +169,7 @@
             <Font name="Arial" size="18.0" />
          </font>
       </Button>
-      <AnchorPane fx:id="Settings_App" prefHeight="700.0" prefWidth="400.0">
+      <AnchorPane fx:id="Settings_App" prefHeight="700.0" prefWidth="400.0" visible="false">
          <children>
             <ImageView fx:id="img" fitHeight="150.0" fitWidth="200.0" layoutX="100.0" layoutY="60.0" onMousePressed="#ChooseImage" pickOnBounds="true" preserveRatio="true">
                <image>
