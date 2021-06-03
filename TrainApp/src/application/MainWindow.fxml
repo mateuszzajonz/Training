@@ -115,7 +115,7 @@
                               <Font size="14.0" />
                            </font>
                         </Label>
-                        <TextField fx:id="txtbox_hour_CT" GridPane.rowIndex="1">
+                        <TextField fx:id="txtbox_hour_CT" alignment="CENTER" promptText="0" text="0" GridPane.rowIndex="1">
                            <font>
                               <Font size="14.0" />
                            </font>
@@ -123,7 +123,7 @@
                               <Insets right="5.0" />
                            </GridPane.margin>
                         </TextField>
-                        <TextField fx:id="txtbox_minute_CT" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                        <TextField fx:id="txtbox_minute_CT" alignment="CENTER" promptText="0" text="0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                            <font>
                               <Font size="14.0" />
                            </font>

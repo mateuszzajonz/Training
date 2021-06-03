@@ -187,13 +187,13 @@ public class Controller {
 
         try
         {
-        	int time = Integer.parseInt(txtbox_hour_CT.getText())*60+ Integer.parseInt(txtbox_minute_CT.getText());
+        	int time = Integer.parseInt(txtbox_hour_CT.getText())+ Integer.parseInt(txtbox_minute_CT.getText());
             if (trainCreate.CheckBoxCountTraining() > 0)
             {
             	if(time>30)
-            		trainCreate.Generate_Training(time, true);
+            		trainCreate.Generate_Training_Main(time, true);
             	else
-            		trainCreate.Generate_Training(time, false);
+            		trainCreate.Generate_Training_Main(time, false);
             }
             else
             {

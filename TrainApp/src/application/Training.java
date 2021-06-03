@@ -39,16 +39,16 @@ public class Training extends Main
         return Main.myConrollerToPass;
     }
 
-    public void Generate_Training(int time, boolean enoughTime)
+    public void Generate_Training_Main(int time, boolean enoughTime)
     {
         Controller myController = Main_CT_Function();
         ClearExerciseLists();
-        AddExerciseFromDatabase();
+        AddExerciseFromDatabase(); // in settings
         AddExercisesToLists(myController);
-        
-        
-
-
+if(enoughTime)
+	Generate_Training_EnoughTime();
+	else
+		Generate_Training_NoTime();
     }
 
     public void ClearExerciseLists()
@@ -61,6 +61,16 @@ public class Training extends Main
         exerciseABS.clear();
     }
 
+    public void Generate_Training_EnoughTime()
+    {
+    	
+    }
+    
+    public void Generate_Training_NoTime()
+    {
+    	
+    }
+    
     public void AddExercisesToLists(Controller myController)
     {
         if (myController.chbox_legs_CT.isSelected())
