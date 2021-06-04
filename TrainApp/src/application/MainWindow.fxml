@@ -7,13 +7,16 @@
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Rectangle?>
@@ -21,19 +24,12 @@
 
 <AnchorPane prefHeight="700.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Controller">
    <children>
-      <AnchorPane fx:id="Training_App" prefHeight="700.0" prefWidth="400.0" visible="false" />
-      <AnchorPane fx:id="Settings_App" prefHeight="700.0" prefWidth="400.0" />
       <AnchorPane fx:id="Main_App" prefHeight="700.0" prefWidth="400.0" visible="false">
          <children>
             <ImageView fx:id="Main_Image" fitHeight="117.0" fitWidth="131.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="135.0" AnchorPane.rightAnchor="134.0" AnchorPane.topAnchor="106.0" />
             <ListView fx:id="Main_ListView" layoutX="57.0" layoutY="271.0" prefHeight="329.0" prefWidth="286.0" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="57.0" AnchorPane.rightAnchor="57.0" AnchorPane.topAnchor="271.0" />
          </children>
       </AnchorPane>
-      <Button fx:id="Side_Menu_btn" mnemonicParsing="false" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="14.0">
-         <graphic>
-            <Label text="MENU" />
-         </graphic>
-      </Button>
       <AnchorPane fx:id="Training_App" prefHeight="700.0" prefWidth="400.0" visible="false">
          <children>
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="621.0" layoutX="19.0" layoutY="65.0" stroke="BLACK" strokeType="INSIDE" width="363.0" AnchorPane.leftAnchor="19.0" AnchorPane.rightAnchor="18.0" AnchorPane.topAnchor="65.0" />
@@ -164,48 +160,85 @@
             </GridPane>
          </children>
       </AnchorPane>
-      <Button fx:id="Side_Menu_btn" mnemonicParsing="false" onAction="#Open_Side_Menu" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="14.0">
-         <graphic>
-            <Label text="MENU">
-               <font>
-                  <Font name="Arial Bold" size="14.0" />
-               </font>
-            </Label>
-         </graphic>
+      <Button fx:id="Side_Menu_btn" mnemonicParsing="false" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="14.0">
          <font>
             <Font name="Arial" size="18.0" />
          </font>
+         <graphic>
+            <ImageView fitHeight="22.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@settings.png" />
+               </image>
+            </ImageView>
+         </graphic>
       </Button>
       <AnchorPane fx:id="Settings_App" prefHeight="700.0" prefWidth="400.0">
          <children>
-            <ImageView fx:id="img" fitHeight="150.0" fitWidth="200.0" layoutX="100.0" layoutY="60.0" onMousePressed="#ChooseImage" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@profilowe.png" />
-               </image></ImageView>
-            <TextField fx:id="imie" editable="false" layoutX="36.0" layoutY="243.0" prefHeight="40.0" prefWidth="149.0" promptText="Imię" AnchorPane.leftAnchor="41.0" AnchorPane.rightAnchor="215.0" />
+            <HBox alignment="TOP_CENTER" layoutX="100.0" layoutY="61.0" prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <ImageView fx:id="img" fitHeight="150.0" fitWidth="200.0" onMousePressed="#ChooseImage" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@profilowe.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </HBox>
+            <TextField fx:id="imie" layoutX="36.0" layoutY="243.0" prefHeight="40.0" prefWidth="149.0" promptText="Imię" AnchorPane.leftAnchor="41.0" AnchorPane.rightAnchor="215.0" />
             <TextField fx:id="nazwisko" layoutX="219.0" layoutY="243.0" prefHeight="40.0" prefWidth="144.0" promptText="Nazwisko" AnchorPane.rightAnchor="41.0" />
             <TextField fx:id="waga" layoutX="41.0" layoutY="290.0" prefHeight="40.0" prefWidth="144.0" promptText="Waga" />
             <TextField fx:id="wzrost" layoutX="216.0" layoutY="290.0" prefHeight="40.0" prefWidth="144.0" promptText="Wzrost" />
-            <Button fx:id="Save_Click" layoutX="41.0" layoutY="384.0" mnemonicParsing="false" onAction="#SaveClick" prefHeight="40.0" prefWidth="320.0" text="Zapisz" />
-            <Button fx:id="Edit_Click" layoutX="41.0" layoutY="384.0" mnemonicParsing="false" onAction="#EditClick" prefHeight="40.0" prefWidth="320.0" text="Edytuj" />
+            <Button fx:id="Save_Click" layoutX="41.0" layoutY="581.0" mnemonicParsing="false" onAction="#SaveClick" prefHeight="40.0" prefWidth="320.0" text="Zapisz" />
+            <Button fx:id="Edit_Click" layoutX="40.0" layoutY="581.0" mnemonicParsing="false" onAction="#EditClick" prefHeight="40.0" prefWidth="320.0" text="Edytuj" />
             <DatePicker fx:id="data" layoutX="41.0" layoutY="338.0" prefHeight="40.0" prefWidth="144.0" />
             <ComboBox fx:id="plec" layoutX="218.0" layoutY="338.0" prefHeight="40.0" prefWidth="144.0" />
+            <Label fx:id="label1" layoutX="40.0" layoutY="389.0" prefHeight="20.0" prefWidth="99.0" text="Główna strona:" />
+            <CheckBox fx:id="checkBMI" layoutX="253.0" layoutY="419.0" mnemonicParsing="false" text="BMI" />
+            <RadioButton fx:id="radioGraf" layoutX="40.0" layoutY="419.0" mnemonicParsing="false" selected="true" text="Graf">
+               <toggleGroup>
+                  <ToggleGroup fx:id="radioBtns" />
+               </toggleGroup>
+            </RadioButton>
+            <RadioButton fx:id="ostatnitrening" layoutX="113.0" layoutY="419.0" mnemonicParsing="false" selected="true" text="Ostatni trening" toggleGroup="$radioBtns" />
+            <ComboBox fx:id="comboCw2" layoutX="68.0" layoutY="499.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="40.0" prefWidth="300.0" promptText="Ulubione ćwiczenie" />
+            <ComboBox fx:id="comboCw1" layoutX="67.0" layoutY="450.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="40.0" prefWidth="300.0" promptText="Ulubione ćwiczenie" />
+            <CheckBox fx:id="checkCW2" layoutX="41.0" layoutY="499.0" mnemonicParsing="false" />
+            <CheckBox fx:id="checkCW1" graphicTextGap="12.0" layoutX="41.0" layoutY="461.0" maxHeight="12.0" maxWidth="123.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="7.0" />
          </children>
       </AnchorPane>
-      <ScrollPane fx:id="scrollPane" layoutX="222.0" prefHeight="700.0" prefWidth="178.0" visible="false">
+      <ScrollPane fx:id="scrollPane" layoutX="222.0" prefHeight="631.0" prefWidth="174.0" visible="false">
         <content>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="700.0" prefWidth="152.0">
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="865.0" prefWidth="152.0">
                <children>
-                  <VBox layoutX="1.0" prefHeight="700.0" prefWidth="165.0">
+                  <VBox layoutX="1.0" prefHeight="700.0" prefWidth="174.0">
                      <children>
                         <ImageView fx:id="i1" fitHeight="145.0" fitWidth="145.0" onMouseClicked="#ChooseImageExit" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@Images/1.png" />
+                              <Image url="@1.png" />
                            </image>
                         </ImageView>
-                        <ImageView fitHeight="145.0" fitWidth="145.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="i2" fitHeight="145.0" fitWidth="145.0" onMouseClicked="#ChooseImageExit" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@Images/2.png" />
+                              <Image url="@2.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fx:id="i3" fitHeight="145.0" fitWidth="145.0" onMouseClicked="#ChooseImageExit" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@3.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fx:id="i4" fitHeight="145.0" fitWidth="145.0" onMouseClicked="#ChooseImageExit" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@4.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fx:id="i5" fitHeight="145.0" fitWidth="145.0" onMouseClicked="#ChooseImageExit" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@5.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fx:id="i6" fitHeight="145.0" fitWidth="145.0" onMouseClicked="#ChooseImageExit" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@6.png" />
                            </image>
                         </ImageView>
                      </children>
@@ -214,5 +247,33 @@
             </AnchorPane>
         </content>
       </ScrollPane>
+      <HBox layoutY="630.0" prefHeight="70.0" prefWidth="400.0">
+         <children>
+            <Button mnemonicParsing="false" onAction="#MainClick" prefHeight="70.0" prefWidth="133.0">
+               <graphic>
+                  <ImageView fitHeight="45.0" fitWidth="52.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@home.png" />
+                     </image></ImageView>
+               </graphic>
+            </Button>
+            <Button mnemonicParsing="false" onAction="#TrainingClick" prefHeight="70.0" prefWidth="133.0">
+               <graphic>
+                  <ImageView fitHeight="45.0" fitWidth="52.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@dziennik.png" />
+                     </image></ImageView>
+               </graphic>
+            </Button>
+            <Button mnemonicParsing="false" onAction="#ProfilClick" prefHeight="70.0" prefWidth="133.0">
+               <graphic>
+                  <ImageView fitHeight="45.0" fitWidth="52.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@user.png" />
+                     </image></ImageView>
+               </graphic>
+            </Button>
+         </children>
+      </HBox>
    </children>
 </AnchorPane>
