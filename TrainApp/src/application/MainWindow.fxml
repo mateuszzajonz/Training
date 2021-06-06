@@ -30,20 +30,25 @@
             <ListView fx:id="Main_ListView" layoutX="57.0" layoutY="271.0" prefHeight="329.0" prefWidth="286.0" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="57.0" AnchorPane.rightAnchor="57.0" AnchorPane.topAnchor="271.0" />
          </children>
       </AnchorPane>
-      <AnchorPane fx:id="Training_App" prefHeight="700.0" prefWidth="400.0" visible="false">
+      <AnchorPane fx:id="Training_App" prefHeight="700.0" prefWidth="400.0">
          <children>
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="621.0" layoutX="19.0" layoutY="65.0" stroke="BLACK" strokeType="INSIDE" width="363.0" AnchorPane.leftAnchor="19.0" AnchorPane.rightAnchor="18.0" AnchorPane.topAnchor="65.0" />
-            <Label layoutX="113.0" layoutY="118.0" text="TRAINING" AnchorPane.leftAnchor="113.0" AnchorPane.rightAnchor="113.0" AnchorPane.topAnchor="118.0">
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="557.0" layoutX="20.0" layoutY="57.0" stroke="BLACK" strokeType="INSIDE" width="360.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="57.0" />
+            <Button graphicTextGap="3.0" layoutX="332.0" layoutY="78.0" mnemonicParsing="false" onAction="#Help_CT" opacity="0.8" text="?">
                <font>
-                  <Font name="Arial Bold" size="36.0" />
+                  <Font name="Caladea Bold" size="16.0" />
+               </font>
+            </Button>
+            <Label alignment="CENTER" layoutX="132.0" layoutY="108.0" text="TRAINING" textAlignment="CENTER" AnchorPane.leftAnchor="120.0" AnchorPane.rightAnchor="120.0">
+               <font>
+                  <Font name="Arial Bold" size="28.0" />
                </font>
             </Label>
-            <Label layoutX="125.0" layoutY="76.0" text="CREATE" AnchorPane.leftAnchor="125.0" AnchorPane.rightAnchor="126.0" AnchorPane.topAnchor="76.0">
+            <Label alignment="CENTER" layoutX="142.0" layoutY="76.0" text="CREATE" textAlignment="CENTER" AnchorPane.leftAnchor="135.0" AnchorPane.rightAnchor="135.0" AnchorPane.topAnchor="76.0">
                <font>
-                  <Font name="Arial Bold" size="36.0" />
+                  <Font name="Arial Bold" size="28.0" />
                </font>
             </Label>
-            <GridPane layoutX="40.0" layoutY="160.0" prefHeight="496.0" prefWidth="320.0" AnchorPane.leftAnchor="40.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="160.0">
+            <GridPane layoutX="40.0" layoutY="148.0" prefHeight="450.0" prefWidth="320.0" AnchorPane.leftAnchor="40.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="148.0">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />

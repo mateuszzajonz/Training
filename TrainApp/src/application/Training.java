@@ -2,8 +2,15 @@ package application;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
+
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 
 public class Training extends Main {
+
+	Random rnd = new Random();
+
 	List<String> listOfExercises = new LinkedList<>();
 	List<String> exerciseLegs = new LinkedList<>();
 	List<String> exerciseBack = new LinkedList<>();
@@ -11,6 +18,7 @@ public class Training extends Main {
 	List<String> exerciseShoulders = new LinkedList<>();
 	List<String> exerciseArms = new LinkedList<>();
 	List<String> exerciseABS = new LinkedList<>();
+	List<String> GeneratedExercises = new LinkedList<>();
 
 	public void AddExerciseFromDatabase() {
 		listOfExercises.add("LEGS,BACK SQUAT");
@@ -33,15 +41,15 @@ public class Training extends Main {
 		return Main.myConrollerToPass;
 	}
 
-	public void Generate_Training_Main(int time, boolean enoughTime) {
+	public void Generate_Training_Main(int time, boolean enoughTime, int count) {
 		Controller myController = Main_CT_Function();
 		ClearExerciseLists();
 		AddExerciseFromDatabase(); // in settings
 		AddExercisesToLists(myController);
 		if (enoughTime)
-			Generate_Training_EnoughTime();
+			Generate_Training_EnoughTime(time, count);
 		else
-			Generate_Training_NoTime();
+			Generate_Training_NoTime(time, count, false);
 	}
 
 	public void ClearExerciseLists() {
@@ -53,12 +61,101 @@ public class Training extends Main {
 		exerciseABS.clear();
 	}
 
-	public void Generate_Training_EnoughTime() {
+	public void Generate_Training_EnoughTime(int time, int count) {
+		GeneratedExercises.clear();
+		int exercises = time / 20;
+		int timeleft = time - exercises;
+		exercises -= count;
 
+		if (!exerciseLegs.isEmpty()) {
+			GeneratedExercises.add(exerciseLegs.get(rnd.nextInt(exerciseLegs.size())));
+			count--;
+		}
+		if (!exerciseChest.isEmpty()) {
+			GeneratedExercises.add(exerciseChest.get(rnd.nextInt(exerciseChest.size())));
+			count--;
+		}
+		if (!exerciseBack.isEmpty()) {
+			GeneratedExercises.add(exerciseBack.get(rnd.nextInt(exerciseBack.size())));
+			count--;
+		}
+		if (!exerciseArms.isEmpty()) {
+			GeneratedExercises.add(exerciseArms.get(rnd.nextInt(exerciseArms.size())));
+			count--;
+		}
+		if (!exerciseShoulders.isEmpty()) {
+			GeneratedExercises.add(exerciseShoulders.get(rnd.nextInt(exerciseLegs.size())));
+			count--;
+		}
+		if (!exerciseABS.isEmpty()) {
+			GeneratedExercises.add(exerciseABS.get(rnd.nextInt(exerciseLegs.size())));
+			count--;
+		}
+
+		while (exercises != 0) {
+			exercises = AddRandomExercise(exercises);
+		}
+		Generate_Training_NoTime(timeleft, count, true);
 	}
 
-	public void Generate_Training_NoTime() {
+	public int AddRandomExercise(int count) {
+		String exerciseToAdd = "";
+		switch (rnd.nextInt(6)) {
+		case 0:
+			if (!exerciseLegs.isEmpty()) {
+				exerciseToAdd = exerciseLegs.get(rnd.nextInt(exerciseLegs.size()));
+			}
+			break;
+		case 1:
+			if (!exerciseChest.isEmpty()) {
+				exerciseToAdd = exerciseChest.get(rnd.nextInt(exerciseChest.size()));
+			}
+			break;
+		case 2:
+			if (!exerciseBack.isEmpty()) {
+				exerciseToAdd = exerciseBack.get(rnd.nextInt(exerciseBack.size()));
+			}
+			break;
+		case 3:
+			if (!exerciseArms.isEmpty()) {
+				exerciseToAdd = exerciseArms.get(rnd.nextInt(exerciseArms.size()));
+			}
+			break;
+		case 4:
+			if (!exerciseShoulders.isEmpty()) {
+				exerciseToAdd = exerciseShoulders.get(rnd.nextInt(exerciseLegs.size()));
+			}
+			break;
+		case 5:
+			if (!exerciseABS.isEmpty()) {
+				exerciseToAdd = exerciseABS.get(rnd.nextInt(exerciseLegs.size()));
+			}
+			break;
+		}
+		if (!GeneratedExercises.contains(exerciseToAdd)) {
+			GeneratedExercises.add(exerciseToAdd);
+			count--;
+		}
+		return count;
+	}
 
+	public void Generate_Training_NoTime(int time, int count, boolean pass) {
+		if (time > 4 || pass) {
+			int exercises = time / 20;
+			if (count != 0) {
+				count -= exercises;
+				time /= count;
+			} else {
+
+			}
+		} else{
+			Alert alert = new Alert(AlertType.INFORMATION);
+			alert.setTitle("Informacja dla U¯YTKOWNIKA");
+			alert.setHeaderText(null);
+			alert.setContentText(
+					"Przepraszamy. Czas przeznaczony na trening okaza³ siê zbyt krótki.\nProszê poœwiêæ wiêcej czasu.");
+			alert.showAndWait();
+		}
 	}
 
 	public void AddExercisesToLists(Controller myController) {

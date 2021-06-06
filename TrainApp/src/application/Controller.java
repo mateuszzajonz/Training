@@ -146,6 +146,8 @@ public class Controller {
 		radioBtn_strength_CT.setToggleGroup(radioTrainGroup);
 		radioBtn_endurance_CT.setToggleGroup(radioTrainGroup);
 		radioBtn_muscle_CT.setToggleGroup(radioTrainGroup);
+		Training train = new Training();
+		train.AddExerciseFromDatabase();
 	}
 
 	private void loadProfil() {
@@ -258,19 +260,26 @@ public class Controller {
 		scrollPane.setVisible(false);
 	}
 
-	public void Create_Training() {
-		Training_App.setVisible(true);
-		Settings_App.setVisible(false);
-		Main_App.setVisible(false);
+	public void Create_Training(ActionEvent event) {
 		Training trainCreate = new Training();
-
+		
+        if (txtbox_minute_CT.getText().equals(""))
+        {
+            txtbox_minute_CT.setText("0");
+        }
+        if (txtbox_hour_CT.getText().equals(""))
+        {
+            txtbox_hour_CT.setText("0");
+        }
+        
 		try {
-			int time = Integer.parseInt(txtbox_hour_CT.getText()) + Integer.parseInt(txtbox_minute_CT.getText());
-			if (trainCreate.CheckBoxCountTraining() > 0) {
-				if (time > 30)
-					trainCreate.Generate_Training_Main(time, true);
+			int time = Integer.parseInt(txtbox_hour_CT.getText())*60 + Integer.parseInt(txtbox_minute_CT.getText());
+			int count = trainCreate.CheckBoxCountTraining();
+			if (count > 0) {
+				if (time >= 20*count)
+					trainCreate.Generate_Training_Main(time, true, count);
 				else
-					trainCreate.Generate_Training_Main(time, false);
+					trainCreate.Generate_Training_Main(time, false, count);
 			} else {
 				Alert alert = new Alert(AlertType.INFORMATION);
 				alert.setTitle("Informacja dla U¯YTKOWNIKA");
@@ -287,7 +296,7 @@ public class Controller {
 		}
 	}
 
-	public void Open_Side_Menu() {  // Zêbatka
+	public void Open_Side_Menu(ActionEvent event) {  // Zêbatka
 	}
 
 	public void ProfilClick(ActionEvent event) {
@@ -302,5 +311,15 @@ public class Controller {
 		Main_App.setVisible(false);
 		Training_App.setVisible(true);
 		scrollPane.setVisible(false);
+	}
+
+	public void Help_CT(ActionEvent event) {
+		Alert alert = new Alert(AlertType.INFORMATION);
+		alert.setTitle("Pomoc");
+		alert.setHeaderText(null);
+		alert.setContentText("1)\tWybór partii miêœniowych wp³ywa na rodzaj treningu.\n2)\tProgram potrzebuje minimum 20 minut na ka¿d¹ partiê cia³a do poprawnego dzia³ania."
+				+"\n3)\tWybór rodzaju treningu wp³ywa na liczbê powtórzeñ jak i d³ugoœæ przerwy.\n4)\t Je¿eli wyskakuje b³¹d, upewnij siê, ¿e dobrze wpisa³eœ czas."
+				+"\n5)\tPrzy braku czasu na trening, wyœwietli siê komunikat, albo zostanie stworzony krótki trening wzmacniaj¹cy");
+		alert.showAndWait();
 	}
 }
