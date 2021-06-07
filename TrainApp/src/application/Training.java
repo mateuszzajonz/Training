@@ -1,10 +1,8 @@
 package application;
 
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Random;
 import java.util.TreeMap;
 
@@ -53,15 +51,6 @@ public class Training extends Main {
 		listOfExercises.add("ABS,RUSSIAN TWIST");
 		listOfExercises.add("ABS,CRUNCHES");
 	}
-
-	Comparator<Entry<String, Integer>> valueComparator = new Comparator<Entry<String, Integer>>() {
-		@Override
-		public int compare(Entry<String, Integer> e1, Entry<String, Integer> e2) {
-			int v1 = e1.getValue();
-			int v2 = e2.getValue();
-			return v1 - v2;
-		}
-	};
 
 	public Controller Main_CT_Function() // CT - Create Training
 	{
