@@ -9,7 +9,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDate;
+
+import org.sqlite.SQLiteDataSource;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -79,6 +85,7 @@ public class Controller {
 	String radioGrp, imageId;
 	Image image;
 	String[] dane;
+	SQLiteDataSource ds = null;
 
 	public void SaveClick(ActionEvent event) {
 
@@ -127,9 +134,19 @@ public class Controller {
 			System.out.println("Error initializing stream");
 		}
 	}
-
+	public void loadDB() {
+		try {
+			ds = new SQLiteDataSource();
+			ds.setUrl("jdbc:sqlite:sample.dbTraining.db");
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(0);
+		}
+		
+	}
 	public void loadOnStart() {
 		loadProfil();
+		loadDB();
 		loadMain();
 		plec.getItems().addAll("Mê¿czyzna", "Kobieta");
 		comboCw1.getItems().addAll("Plank", "V-ups", "Hollow Hold");
