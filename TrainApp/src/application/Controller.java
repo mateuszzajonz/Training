@@ -80,6 +80,13 @@ public class Controller {
 	public RadioButton radioBtn_muscle_CT;
 	public RadioButton radioBtn_endurance_CT;
 	public RadioButton radioBtn_strength_CT;
+	public GridPane Create_grid_CT;
+	public GridPane Accept_grid_CT;
+	public Button goBack_acceptGrid_CT;
+	public Button accept_acceptGrid_CT;
+	public Button reroll_acceptGrid_CT;
+	public TextArea txtArea_acceptGrid_CT;
+	Training trainCreate = new Training();
 
 	String radioGrp, imageId;
 	Image image;
@@ -255,7 +262,6 @@ public class Controller {
 		} catch (IOException e) {
 			System.out.println("Error initializing stream");
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -329,7 +335,6 @@ public class Controller {
 	}
 
 	public void Create_Training(ActionEvent event) {
-		Training trainCreate = new Training();
 
 		if (txtbox_minute_CT.getText().equals("")) {
 			txtbox_minute_CT.setText("0");
@@ -388,5 +393,26 @@ public class Controller {
 						+ "\n3)\tWybór rodzaju treningu wp³ywa na liczbê powtórzeñ jak i d³ugoœæ przerwy.\n4)\t Je¿eli wyskakuje b³¹d, upewnij siê, ¿e dobrze wpisa³eœ czas."
 						+ "\n5)\tPrzy braku czasu na trening, wyœwietli siê komunikat, albo zostanie stworzony krótki trening wzmacniaj¹cy");
 		alert.showAndWait();
+	}
+
+	public void GoBack_CT_Action() {
+		trainCreate.listOfExercises.clear();
+		trainCreate.ClearExerciseLists();
+		txtArea_acceptGrid_CT.clear();
+		Accept_grid_CT.setVisible(false);
+		Create_grid_CT.setVisible(true);
+	}
+
+	public void Reroll_CT_Action() {
+		int time = Integer.parseInt(txtbox_hour_CT.getText()) * 60 + Integer.parseInt(txtbox_minute_CT.getText());
+		int count = trainCreate.CheckBoxCountTraining();
+		if (time >= 20 * count)
+			trainCreate.Generate_Training_Main(time, true, count);
+		else
+			trainCreate.Generate_Training_Main(time, false, count);
+	}
+
+	public void Accept_CT_Action() {
+
 	}
 }

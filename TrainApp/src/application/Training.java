@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import java.util.TreeMap;
 
 import javafx.scene.control.Alert;
@@ -23,7 +24,7 @@ public class Training extends Main {
 	ExerciseComparator ec = new ExerciseComparator(GeneratedExercises);
 	TreeMap<String, Integer> sorted_map = new TreeMap<String, Integer>(ec);
 	static Controller myController;
-	static boolean enoughTimeForAllExercises = false;
+	static boolean enoughTimeForAllExercises;
 
 	public void AddExerciseFromDatabase() {
 		listOfExercises.add("LEGS,BACK SQUAT");
@@ -58,16 +59,28 @@ public class Training extends Main {
 	}
 
 	public void Generate_Training_Main(int time, boolean enoughTime, int count) {
+		listOfExercises.clear();
+		GeneratedExercises.clear();
 		myController = Main_CT_Function();
 		ClearExerciseLists();
 		AddExerciseFromDatabase(); // in settings
 		AddExercisesToLists(myController);
-		enoughTimeForAllExercises = false;
-		if (enoughTime) {
-			Generate_Training_EnoughTime(time, count);
-			enoughTimeForAllExercises = true;
-		} else
-			Generate_Training_NoTime(time, count, false);
+		if (count * 20 * 4 > time) { // poprawiæ do wielkoœci listy
+			if (enoughTime) {
+				Generate_Training_EnoughTime(time, count);
+				enoughTimeForAllExercises = true;
+			} else {
+				enoughTimeForAllExercises = false;
+				Generate_Training_NoTime(time, count, false);
+			}
+		} else {
+			Alert alert = new Alert(AlertType.INFORMATION);
+			alert.setTitle("Informacja dla U¯YTKOWNIKA");
+			alert.setHeaderText(null);
+			alert.setContentText(
+					"Przepraszamy. Czas przeznaczony na trening okaza³ siê zbyt d³ugi (na nasz¹ bazê æwiczeñ).\nZobacz czy nie wpisa³eœ minut w miejsce godzin.");
+			alert.showAndWait();
+		}
 	}
 
 	public void ClearExerciseLists() {
@@ -80,7 +93,6 @@ public class Training extends Main {
 	}
 
 	public void Generate_Training_EnoughTime(int time, int count) {
-		GeneratedExercises.clear();
 		int exercises = time / 20;
 		int timeleft = time - exercises * 20;
 		exercises -= count;
@@ -116,23 +128,17 @@ public class Training extends Main {
 			GeneratedExercises.put(words[1], 5);
 			count--;
 		}
-		if (!exerciseABS.isEmpty()) {
-			rand = rnd.nextInt(exerciseABS.size());
-			String[] words = exerciseABS.get(rand).split(",");
-			GeneratedExercises.put(words[1], 6);
-			count--;
-		}
 
-		while (exercises != 0) {
+		while (exercises > 0) {
 			exercises = AddRandomExercise(exercises);
 		}
 
-		Generate_Training_NoTime(timeleft, count, true);
+		Generate_Training_NoTime(timeleft, 0, true);
 	}
 
 	public int AddRandomExercise(int count) {
 		String exerciseToAdd = "";
-		switch (rnd.nextInt(6)) {
+		switch (rnd.nextInt(5)) {
 		case 0:
 			if (!exerciseLegs.isEmpty()) {
 				exerciseToAdd = exerciseLegs.get(rnd.nextInt(exerciseLegs.size()));
@@ -156,11 +162,6 @@ public class Training extends Main {
 		case 4:
 			if (!exerciseArms.isEmpty()) {
 				exerciseToAdd = exerciseArms.get(rnd.nextInt(exerciseArms.size()));
-			}
-			break;
-		case 5:
-			if (!exerciseABS.isEmpty()) {
-				exerciseToAdd = exerciseABS.get(rnd.nextInt(exerciseABS.size()));
 			}
 			break;
 		}
@@ -200,8 +201,9 @@ public class Training extends Main {
 	}
 
 	public void Generate_Training_NoTime(int time, int count, boolean pass) {
-		float timeForExercise = ((float)time) / 20; // zakres 0-1 czyli % czasu potrzebny na æwiczenie np. 80% z oryginalnych 20 minut to 16 minut
-											
+		float timeForExercise = ((float) time) / 20; // zakres 0-1 czyli % czasu potrzebny na æwiczenie np. 80% z
+														// oryginalnych 20 minut to 16 minut
+
 		if (pass) {
 			if (myController.radioBtn_strength_CT.isSelected()) {
 				if (timeForExercise >= 0.80)
@@ -219,7 +221,7 @@ public class Training extends Main {
 				else
 					FinalTraining("endurance", false);
 			}
-		} else if (timeForExercise / count >= 0.8 && time>30) {
+		} else if (timeForExercise / count >= 0.8 && time > 30) {
 			Generate_Training_EnoughTime(time, count);
 		} else {
 			Alert alert = new Alert(AlertType.INFORMATION);
@@ -233,32 +235,46 @@ public class Training extends Main {
 
 	public void FinalTraining(String type, boolean enoughTime) {
 		int count = 1;
-		
-		System.out.println("--------------------");
-		System.out.println("results: " + sorted_map);
-		
-		if (enoughTime) {
+
+		if (enoughTime && enoughTimeForAllExercises) {
 			count = 1;
-			while (count != 0) {
+			while (count > 0) {
 				count = AddRandomExercise(count);
 			}
 		}
+		sorted_map.clear();
 		sorted_map.putAll(GeneratedExercises);
-		
+		listOfExercises.clear();
+		Set<String> keys = sorted_map.keySet();
+		for (String key : keys) {
+			listOfExercises.add(key);
+		}
+		myController.txtArea_acceptGrid_CT.clear();
+		String doneTraining = "";
+		myController.txtArea_acceptGrid_CT.appendText("Twój auto-wygenerowany trening to:\n\n");
 		switch (type) {
 		case "strength":
-			
+			for (int i = 0; i < listOfExercises.size(); i++) {
+				doneTraining += listOfExercises.get(i) + ", 5x5, weight:"+"db"+", 3:00 rest."; //db - ciê¿ar z databazy
+				myController.txtArea_acceptGrid_CT.appendText((i+1)+")  "+listOfExercises.get(i) + "\n5x5, weight:"+"db"+", 3:00 rest."+"\n\n");
+			}
 			break;
 		case "muscle":
-			
+			for (int i = 0; i < listOfExercises.size(); i++) {
+				doneTraining += listOfExercises.get(i) + ", 6x8, weight:"+"db"+", 2:00 rest."; //db - ciê¿ar z databazy
+				myController.txtArea_acceptGrid_CT.appendText((i+1)+")  "+listOfExercises.get(i) + "\n6x8, weight:"+"db"+", 2:00 rest."+"\n\n");
+			}
 			break;
 		case "endurance":
-			
+			for (int i = 0; i < listOfExercises.size(); i++) {
+				doneTraining += listOfExercises.get(i) + ", 10x12, weight:"+"db"+", 1:00 rest."; //db - ciê¿ar z databazy
+				myController.txtArea_acceptGrid_CT.appendText((i+1)+")  "+listOfExercises.get(i) + "\n10x12, weight:"+"db"+", 1:00 rest."+"\n\n");
+			}
 			break;
 		}
-		
-		System.out.println("--------------------");
-		System.out.println("results: " + sorted_map);
+
+		myController.Accept_grid_CT.setVisible(true);
+		myController.Create_grid_CT.setVisible(false);
 	}
 
 	public void AddExercisesToLists(Controller myController) {
