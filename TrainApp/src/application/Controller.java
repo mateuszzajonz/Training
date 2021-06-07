@@ -141,11 +141,12 @@ public class Controller {
 		checkCW1.setDisable(true);
 		checkCW2.setDisable(true);
 
-		Save_Click.setVisible(false);
+		Save_Click.setVisible(false);		
 		ToggleGroup radioTrainGroup = new ToggleGroup();
 		radioBtn_strength_CT.setToggleGroup(radioTrainGroup);
 		radioBtn_endurance_CT.setToggleGroup(radioTrainGroup);
 		radioBtn_muscle_CT.setToggleGroup(radioTrainGroup);
+		radioBtn_strength_CT.setSelected(true);;
 		Training train = new Training();
 		train.AddExerciseFromDatabase();
 	}
@@ -291,7 +292,7 @@ public class Controller {
 			Alert alert = new Alert(AlertType.INFORMATION);
 			alert.setTitle("Informacja dla U¯YTKOWNIKA");
 			alert.setHeaderText(null);
-			alert.setContentText("Przepraszamy. Coœ posz³o nie tak. Spróbuj jeszcze raz.");
+			alert.setContentText("Przepraszamy. Coœ posz³o nie tak:\n\n"+e+ "\n\nSpróbuj jeszcze raz.");
 			alert.showAndWait();
 		}
 	}
