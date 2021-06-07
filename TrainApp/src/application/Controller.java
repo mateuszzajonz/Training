@@ -20,12 +20,14 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.chart.LineChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.AnchorPane;
@@ -39,11 +41,11 @@ public class Controller {
 	public AnchorPane Training_App;
 	public AnchorPane Main_App;
 	public ImageView Main_Image;
-	public ListView Main_ListView;
 	public ImageView img;
 	public Button Side_Menu_btn;
 	public GridPane Side_Menu_App;
 
+	//settings app
 	public ComboBox plec, comboCw2, comboCw1;
 	public TextField imie, nazwisko, waga, wzrost;
 	public DatePicker data;
@@ -55,6 +57,12 @@ public class Controller {
 	public CheckBox checkBMI, checkCW1, checkCW2;
 	public ImageView i1, i2, i3, i4, i5, i6;
 
+	//main app
+	public Label Main_Imie,Main_Nazwisko,Main_Waga,Main_Wzrost,Main_BMI,lblBMI;
+	public LineChart<String, String> Main_Graf;
+	public TextArea Main_OstatniTrening;
+	
+	
 	public Button btn_CT;
 	public TextField txtbox_minute_CT;
 	public TextField txtbox_hour_CT;
@@ -70,6 +78,7 @@ public class Controller {
 
 	String radioGrp, imageId;
 	Image image;
+	String[] dane;
 
 	public void SaveClick(ActionEvent event) {
 
@@ -121,6 +130,7 @@ public class Controller {
 
 	public void loadOnStart() {
 		loadProfil();
+		loadMain();
 		plec.getItems().addAll("Mê¿czyzna", "Kobieta");
 		comboCw1.getItems().addAll("Plank", "V-ups", "Hollow Hold");
 		comboCw2.getItems().addAll("Plank", "V-ups", "Hollow Hold");
@@ -146,15 +156,58 @@ public class Controller {
 		radioBtn_strength_CT.setToggleGroup(radioTrainGroup);
 		radioBtn_endurance_CT.setToggleGroup(radioTrainGroup);
 		radioBtn_muscle_CT.setToggleGroup(radioTrainGroup);
+		
+		Training train = new Training();
+        train.AddExerciseFromDatabase();
+        
 	}
-
+	
+	private void loadMain() {
+        Main_Image.setImage(image);
+        Main_Imie.setText(dane[0]);
+        Main_Nazwisko.setText(dane[1]);
+        Main_Waga.setText(dane[2] + " kg");
+        Main_Wzrost.setText(dane[3] + " cm");
+        
+        if(radioGraf.isSelected()) {
+        	Main_Graf.setVisible(true);
+        	Main_OstatniTrening.setVisible(false);
+        }else {
+        	Main_OstatniTrening.setVisible(true);
+        	Main_Graf.setVisible(false);
+        }
+        if(!checkBMI.isSelected()) {
+        	Main_BMI.setVisible(false);
+        	lblBMI.setVisible(false);
+        }else {
+        	Main_BMI.setVisible(true);
+        	lblBMI.setVisible(true);
+        }
+        Main_OstatniTrening.clear();
+        if(checkCW1.isSelected()) {
+        	Main_OstatniTrening.appendText(dane[9]+"\nOstatni trening"+""+"\nMax"+""+"\nIloœæ powtórzeñ"+"");
+        }
+        if(checkCW1.isSelected() && checkCW1.isSelected()) {
+        	Main_OstatniTrening.appendText("\n\n");
+        }
+        if(checkCW2.isSelected()) {
+        	Main_OstatniTrening.appendText(dane[10]+"\nOstatni trening"+""+"\nMax"+""+"\nIloœæ powtórzeñ"+"");
+        }
+        Double BMI = (Double.parseDouble(dane[3])/Double.parseDouble(dane[2])*10);
+        Double a = BMI;
+        a *= 100; // pi = pi * 100;
+        a = (double) Math.round(a);
+        a /= 100; // pi = pi / 100;
+        Main_BMI.setText(a.toString());
+	}
+	
 	private void loadProfil() {
 		try {
 		FileInputStream fi = new FileInputStream(new File("Profil.txt"));
         ObjectInputStream oi = new ObjectInputStream(fi);
 		Profil pr1 = (Profil) oi.readObject();
 		
-        String[] dane = pr1.toString().split("\n");
+        dane = pr1.toString().split("\n");
         
         imie.setText(dane[0]);
         nazwisko.setText(dane[1]);
@@ -163,7 +216,8 @@ public class Controller {
         data.setValue(LocalDate.parse(dane[4]));
         plec.setValue(dane[5]);
         SetImage(dane[6]);
-        if(dane[7] == "Graf") {
+        
+        if(dane[7].equals("Graf")) {
         	radioGraf.setSelected(true);
         }else {
         	ostatnitrening.setSelected(true);
@@ -256,6 +310,7 @@ public class Controller {
 		Settings_App.setVisible(false);
 		Training_App.setVisible(false);
 		scrollPane.setVisible(false);
+		loadMain();
 	}
 
 	public void Create_Training() {
