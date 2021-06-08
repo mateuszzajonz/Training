@@ -33,9 +33,9 @@
          <children>
             <TableView fx:id="table" layoutX="28.0" layoutY="113.0" prefHeight="200.0" prefWidth="344.0" AnchorPane.leftAnchor="28.0" AnchorPane.rightAnchor="28.0">
               <columns>
-                <TableColumn fx:id="idColumn" prefWidth="64.0" text="ID" />
-                <TableColumn fx:id="dateColumn" prefWidth="116.0" text="Data" />
-                  <TableColumn fx:id="nameColumn" minWidth="0.0" prefWidth="179.0" text="Nazwa" />
+                <TableColumn fx:id="idCol" prefWidth="64.0" text="ID" />
+                <TableColumn fx:id="dateCol" prefWidth="116.0" text="Data" />
+                  <TableColumn fx:id="nameCol" minWidth="0.0" prefWidth="179.0" text="Nazwa" />
               </columns>
             </TableView>
          </children>

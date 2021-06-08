@@ -18,6 +18,7 @@ import java.time.LocalDate;
 import org.sqlite.SQLiteDataSource;
 
 import javafx.application.Application;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -81,6 +82,22 @@ public class Controller {
 //	public TableColumn<Trainings,String> idColumn = new TableColumn<>("ID");
 //	public TableColumn<Trainings,String> dateColumn = new TableColumn<>("Data");
 //	public TableColumn<Trainings,String> nameColumn = new TableColumn<>("Nazwa");
+
+	public TableView<finishedTrainings> table;
+	public TableColumn<finishedTrainings, String> idCol;
+	public TableColumn<finishedTrainings, String> dateCol;
+	public TableColumn<finishedTrainings, String> nameCol;
+	ObservableList<finishedTrainings> obslist = FXCollections.observableArrayList();
+
+//	ObservableList<finishedTrainings> getfinishedTrainingsList(){
+//		ObservableList<finishedTrainings> obslist = FXCollections.observableArrayList();
+//		obslist.add(new finishedTrainings("1","11.07.1999","LEGS"));
+//		obslist.add(new finishedTrainings("2","19.08.1999","LEGS"));
+//		obslist.add(new finishedTrainings("3","19.07.1999","ABS"));
+//		obslist.add(new finishedTrainings("4","19.01.1999","LEGS"));
+//		obslist.add(new finishedTrainings("5","19.07.1999","LEGS"));
+//		return obslist;
+//	}
 
 	// training app
 	public Button btn_CT;
@@ -387,24 +404,22 @@ public class Controller {
 		Main_App.setVisible(false);
 		Training_App.setVisible(false);
 		scrollPane.setVisible(false);
-//		try {
-//			Connection con = ds.getConnection();
-//			ResultSet rs = con.createStatement().executeQuery("Select * from Trainings");
-//			while(rs.next()) {
-//				obslist.add(new Trainings(rs.getString("ID_training"),rs.getString("Date"),rs.getString("Name")));
-//			}
-//		}catch(SQLException e){
-//			System.out.print("B³¹d");
-//		}
-//
-//		idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
-//		dateColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
-//		nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-//
-//		
-//
-//		table.setItems(obslist);
-////		table.getColumns().addAll(idColumn,dateColumn,nameColumn);					
+		try {
+			Connection con = ds.getConnection();
+			ResultSet rs = con.createStatement().executeQuery("Select * from Trainings");
+			while (rs.next()) {
+				obslist.add(
+						new finishedTrainings(rs.getString("ID_training"), rs.getString("Date"), rs.getString("Name")));
+			}
+		} catch (SQLException e) {
+			System.out.print("B³¹d");
+		}
+
+		idCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getId()));
+		dateCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDate()));
+		nameCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
+
+		table.setItems(obslist);
 	}
 
 	public void ProfilClick(ActionEvent event) {
