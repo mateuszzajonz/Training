@@ -11,6 +11,8 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToggleGroup?>
@@ -27,7 +29,18 @@
 
 <AnchorPane prefHeight="700.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Controller">
    <children>
-      <AnchorPane fx:id="Main_App" prefHeight="700.0" prefWidth="400.0">
+      <AnchorPane fx:id="Side_Menu_App" prefHeight="700.0" prefWidth="400.0">
+         <children>
+            <TableView fx:id="table" layoutX="28.0" layoutY="113.0" prefHeight="200.0" prefWidth="344.0" AnchorPane.leftAnchor="28.0" AnchorPane.rightAnchor="28.0">
+              <columns>
+                <TableColumn fx:id="idColumn" prefWidth="64.0" text="ID" />
+                <TableColumn fx:id="dateColumn" prefWidth="116.0" text="Data" />
+                  <TableColumn fx:id="nameColumn" minWidth="0.0" prefWidth="179.0" text="Nazwa" />
+              </columns>
+            </TableView>
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="Main_App" prefHeight="700.0" prefWidth="400.0" visible="false">
          <children>
             <TextArea fx:id="Main_OstatniTrening" editable="false" layoutX="20.0" layoutY="147.0" prefHeight="320.0" prefWidth="344.0" text="&#10;" visible="false" AnchorPane.leftAnchor="28.0" AnchorPane.rightAnchor="28.0" />
             <LineChart fx:id="Main_Graf" layoutX="52.0" layoutY="148.0" prefHeight="320.0" prefWidth="344.0" visible="false" AnchorPane.leftAnchor="28.0" AnchorPane.rightAnchor="28.0">
@@ -258,18 +271,6 @@
             </GridPane>
          </children>
       </AnchorPane>
-      <Button fx:id="Side_Menu_btn" mnemonicParsing="false" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="14.0">
-         <font>
-            <Font name="Arial" size="18.0" />
-         </font>
-         <graphic>
-            <ImageView fitHeight="22.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@settings.png" />
-               </image>
-            </ImageView>
-         </graphic>
-      </Button>
       <AnchorPane fx:id="Settings_App" prefHeight="700.0" prefWidth="400.0" visible="false">
          <children>
             <HBox alignment="TOP_CENTER" layoutX="100.0" layoutY="61.0" prefHeight="100.0" prefWidth="200.0">
@@ -373,5 +374,17 @@
             </Button>
          </children>
       </HBox>
+      <Button fx:id="Side_Menu_btn" mnemonicParsing="false" onAction="#Open_Side_Menu" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="14.0">
+         <font>
+            <Font name="Arial" size="18.0" />
+         </font>
+         <graphic>
+            <ImageView fitHeight="22.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@settings.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
    </children>
 </AnchorPane>

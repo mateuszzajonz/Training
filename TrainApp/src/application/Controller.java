@@ -17,6 +17,9 @@ import java.time.LocalDate;
 
 import org.sqlite.SQLiteDataSource;
 
+import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -33,11 +36,15 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
 import javafx.scene.control.CheckBox;
 
 public class Controller {
@@ -49,7 +56,7 @@ public class Controller {
 	public ImageView Main_Image;
 	public ImageView img;
 	public Button Side_Menu_btn;
-	public GridPane Side_Menu_App;
+	public AnchorPane Side_Menu_App;
 
 	// settings app
 	public ComboBox plec, comboCw2, comboCw1;
@@ -68,6 +75,14 @@ public class Controller {
 	public LineChart<String, String> Main_Graf;
 	public TextArea Main_OstatniTrening;
 
+	//Side
+//	public TableView<Trainings> table;
+//	public ObservableList<Trainings> obslist = FXCollections.observableArrayList();
+//	public TableColumn<Trainings,String> idColumn = new TableColumn<>("ID");
+//	public TableColumn<Trainings,String> dateColumn = new TableColumn<>("Data");
+//	public TableColumn<Trainings,String> nameColumn = new TableColumn<>("Nazwa");
+	
+	// training app
 	public Button btn_CT;
 	public TextField txtbox_minute_CT;
 	public TextField txtbox_hour_CT;
@@ -367,10 +382,34 @@ public class Controller {
 		}
 	}
 
-	public void Open_Side_Menu(ActionEvent event) { // Zêbatka
+	public void Open_Side_Menu(ActionEvent event) {
+		Side_Menu_App.setVisible(true);
+		Settings_App.setVisible(false);
+		Main_App.setVisible(false);
+		Training_App.setVisible(false);
+		scrollPane.setVisible(false);
+//		try {
+//			Connection con = ds.getConnection();
+//			ResultSet rs = con.createStatement().executeQuery("Select * from Trainings");
+//			while(rs.next()) {
+//				obslist.add(new Trainings(rs.getString("ID_training"),rs.getString("Date"),rs.getString("Name")));
+//			}
+//		}catch(SQLException e){
+//			System.out.print("B³¹d");
+//		}
+//
+//		idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+//		dateColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
+//		nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+//
+//		
+//
+//		table.setItems(obslist);
+////		table.getColumns().addAll(idColumn,dateColumn,nameColumn);					
 	}
 
 	public void ProfilClick(ActionEvent event) {
+		Side_Menu_App.setVisible(false);
 		Settings_App.setVisible(true);
 		Main_App.setVisible(false);
 		Training_App.setVisible(false);
@@ -382,6 +421,7 @@ public class Controller {
 		Main_App.setVisible(false);
 		Training_App.setVisible(true);
 		scrollPane.setVisible(false);
+		Side_Menu_App.setVisible(false);
 	}
 
 	public void Help_CT(ActionEvent event) {
