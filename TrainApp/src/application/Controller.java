@@ -10,14 +10,18 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import org.sqlite.SQLiteDataSource;
 
 import javafx.application.Application;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -56,8 +60,7 @@ public class Controller {
 	public ImageView Main_Image;
 	public ImageView img;
 	public Button Side_Menu_btn;
-	public AnchorPane Side_Menu_App;
-	public Label dbConnect;
+//	public AnchorPane Side_Menu_App;
 
 	// settings app
 	public ComboBox plec, comboCw2, comboCw1;
@@ -75,6 +78,7 @@ public class Controller {
 	public Label Main_Imie, Main_Nazwisko, Main_Waga, Main_Wzrost, Main_BMI, lblBMI;
 	public LineChart<String, String> Main_Graf;
 	public TextArea Main_OstatniTrening;
+	public Button Main_DeleteOne,Main_DeleteAll;
 
 	// Side
 //	public TableView<Trainings> table;
@@ -82,6 +86,22 @@ public class Controller {
 //	public TableColumn<Trainings,String> idColumn = new TableColumn<>("ID");
 //	public TableColumn<Trainings,String> dateColumn = new TableColumn<>("Data");
 //	public TableColumn<Trainings,String> nameColumn = new TableColumn<>("Nazwa");
+
+	public TableView<finishedTrainings> table;
+	public TableColumn<finishedTrainings, String> idCol;
+	public TableColumn<finishedTrainings, String> dateCol;
+	public TableColumn<finishedTrainings, String> nameCol;
+	ObservableList<finishedTrainings> obslist = FXCollections.observableArrayList();
+
+//	ObservableList<finishedTrainings> getfinishedTrainingsList(){
+//		ObservableList<finishedTrainings> obslist = FXCollections.observableArrayList();
+//		obslist.add(new finishedTrainings("1","11.07.1999","LEGS"));
+//		obslist.add(new finishedTrainings("2","19.08.1999","LEGS"));
+//		obslist.add(new finishedTrainings("3","19.07.1999","ABS"));
+//		obslist.add(new finishedTrainings("4","19.01.1999","LEGS"));
+//		obslist.add(new finishedTrainings("5","19.07.1999","LEGS"));
+//		return obslist;
+//	}
 
 	// training app
 	public Button btn_CT;
@@ -157,14 +177,29 @@ public class Controller {
 			System.out.println("Error initializing stream");
 		}
 	}
+	public void LoadTableView() {
+		table.getItems().clear();
+		try {
+			Connection con = ds.getConnection();
+			ResultSet rs = con.createStatement().executeQuery("Select * from Trainings");
+			while (rs.next()) {
+				obslist.add(
+						new finishedTrainings(rs.getString("ID_training"), rs.getString("Date"), rs.getString("Name")));
+			}
+		} catch (SQLException e) {
+			System.out.print("B³¹d");
+		}
 
+		dateCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDate()));
+		nameCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
+
+		table.setItems(obslist);
+	}
 	public void loadDB() {
 		try {
 			ds = new SQLiteDataSource();
 			ds.setUrl("jdbc:sqlite:sample.dbTraining.db");
-			dbConnect.setText("Connected");
 		} catch (Exception e) {
-			dbConnect.setText("Not Connected");
 			e.printStackTrace();
 			System.exit(0);
 		}
@@ -173,6 +208,7 @@ public class Controller {
 	public void loadOnStart() {
 		loadProfil();
 		loadDB();
+		LoadTableView();
 		loadMain();
 		plec.getItems().addAll("Mê¿czyzna", "Kobieta");
 		comboCw1.getItems().addAll("Plank", "V-ups", "Hollow Hold");
@@ -210,13 +246,18 @@ public class Controller {
 		Main_Nazwisko.setText(dane[1]);
 		Main_Waga.setText(dane[2] + " kg");
 		Main_Wzrost.setText(dane[3] + " cm");
-
+		LoadTableView();
 		if (radioGraf.isSelected()) {
 			Main_Graf.setVisible(true);
-			Main_OstatniTrening.setVisible(false);
+			table.setVisible(false);
+			Main_DeleteAll.setVisible(false);
+			Main_DeleteOne.setVisible(false);
+			
 		} else {
-			Main_OstatniTrening.setVisible(true);
+			table.setVisible(true);
 			Main_Graf.setVisible(false);
+			Main_DeleteAll.setVisible(true);
+			Main_DeleteOne.setVisible(true);
 		}
 		if (!checkBMI.isSelected()) {
 			Main_BMI.setVisible(false);
@@ -225,17 +266,16 @@ public class Controller {
 			Main_BMI.setVisible(true);
 			lblBMI.setVisible(true);
 		}
-		Main_OstatniTrening.clear();
 		if (checkCW1.isSelected()) {
-			Main_OstatniTrening
-					.appendText(dane[9] + "\nOstatni trening" + "" + "\nMax" + "" + "\nIloœæ powtórzeñ" + "");
+//			Main_OstatniTrening
+//					.appendText(dane[9] + "\nOstatni trening" + "" + "\nMax" + "" + "\nIloœæ powtórzeñ" + "");
 		}
 		if (checkCW1.isSelected() && checkCW1.isSelected()) {
-			Main_OstatniTrening.appendText("\n\n");
+//			Main_OstatniTrening.appendText("\n\n");
 		}
 		if (checkCW2.isSelected()) {
-			Main_OstatniTrening
-					.appendText(dane[10] + "\nOstatni trening" + "" + "\nMax" + "" + "\nIloœæ powtórzeñ" + "");
+//			Main_OstatniTrening
+//					.appendText(dane[10] + "\nOstatni trening" + "" + "\nMax" + "" + "\nIloœæ powtórzeñ" + "");
 		}
 		Double BMI = (Double.parseDouble(dane[3]) / Double.parseDouble(dane[2]) * 10);
 		Double a = BMI;
@@ -385,34 +425,18 @@ public class Controller {
 		}
 	}
 
-	public void Open_Side_Menu(ActionEvent event) {
-		Side_Menu_App.setVisible(true);
-		Settings_App.setVisible(false);
-		Main_App.setVisible(false);
-		Training_App.setVisible(false);
-		scrollPane.setVisible(false);
-//		try {
-//			Connection con = ds.getConnection();
-//			ResultSet rs = con.createStatement().executeQuery("Select * from Trainings");
-//			while(rs.next()) {
-//				obslist.add(new Trainings(rs.getString("ID_training"),rs.getString("Date"),rs.getString("Name")));
-//			}
-//		}catch(SQLException e){
-//			System.out.print("B³¹d");
-//		}
-//
-//		idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
-//		dateColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
-//		nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-//
-//		
-//
-//		table.setItems(obslist);
-////		table.getColumns().addAll(idColumn,dateColumn,nameColumn);					
-	}
+//	public void Open_Side_Menu(ActionEvent event) {
+//		Side_Menu_App.setVisible(true);
+//		Settings_App.setVisible(false);
+//		Main_App.setVisible(false);
+//		Training_App.setVisible(false);
+//		scrollPane.setVisible(false);
+//		LoadTableView();
+//	}
+	
 
 	public void ProfilClick(ActionEvent event) {
-		Side_Menu_App.setVisible(false);
+//		Side_Menu_App.setVisible(false);
 		Settings_App.setVisible(true);
 		Main_App.setVisible(false);
 		Training_App.setVisible(false);
@@ -424,7 +448,7 @@ public class Controller {
 		Main_App.setVisible(false);
 		Training_App.setVisible(true);
 		scrollPane.setVisible(false);
-		Side_Menu_App.setVisible(false);
+//		Side_Menu_App.setVisible(false);
 	}
 
 	public void Help_CT(ActionEvent event) {
@@ -456,7 +480,38 @@ public class Controller {
 	}
 
 	public void Accept_CT_Action() {
-		if (!trainingToDB.equals(""))
-			System.out.println(trainingToDB);
+		try {
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+			LocalDateTime now = LocalDateTime.now();
+			Connection con = ds.getConnection();
+			PreparedStatement ps = con.prepareStatement("INSERT INTO Trainings(ID_training,Date,Name) VALUES(?,?,?)");
+			ps.setString(2, dtf.format(now));
+			ps.setString(3, trainingToDB);
+			ps.executeUpdate();	
+		} catch (SQLException e) {
+			System.out.print("B³¹d" + e);
+		}
+	}
+	public void Delete_Training() {
+		try {
+			Connection con = ds.getConnection();
+			PreparedStatement ps = con.prepareStatement("DELETE FROM Trainings WHERE ID_training = ?;");
+			finishedTrainings train = table.getSelectionModel().getSelectedItem();
+			ps.setString(1, train.getId() );
+			ps.executeUpdate();	
+		} catch (SQLException e) {
+			System.out.print("B³¹d" + e);
+		}
+		LoadTableView();
+	}
+	public void Delete_TrainingAll() {
+		try {
+			Connection con = ds.getConnection();
+			PreparedStatement ps = con.prepareStatement("DELETE FROM Trainings;");
+			ps.executeUpdate();	
+		} catch (SQLException e) {
+			System.out.print("B³¹d" + e);
+		}
+		LoadTableView();
 	}
 }

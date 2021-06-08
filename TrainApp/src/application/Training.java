@@ -258,19 +258,19 @@ public class Training extends Main {
 		switch (type) {
 		case "strength":
 			for (int i = 0; i < listOfExercises.size(); i++) {
-				doneTraining += listOfExercises.get(i) + ",5x5"+",db"+",3:00."; //db - ciê¿ar z databazy
+				doneTraining += listOfExercises.get(i) + ",5x5"+",db"+",3:00;"; //db - ciê¿ar z databazy
 				myController.txtArea_acceptGrid_CT.appendText((i+1)+")  "+listOfExercises.get(i) + "\n5x5, weight:"+"db"+", 3:00 rest."+"\n\n");
 			}
 			break;
 		case "muscle":
 			for (int i = 0; i < listOfExercises.size(); i++) {
-				doneTraining += listOfExercises.get(i) + ",6x8"+",db"+",2:00."; //db - ciê¿ar z databazy
+				doneTraining += listOfExercises.get(i) + ",6x8"+",db"+",2:00;"; //db - ciê¿ar z databazy
 				myController.txtArea_acceptGrid_CT.appendText((i+1)+")  "+listOfExercises.get(i) + "\n6x8, weight:"+"db"+", 2:00 rest."+"\n\n");
 			}
 			break;
 		case "endurance":
 			for (int i = 0; i < listOfExercises.size(); i++) {
-				doneTraining += listOfExercises.get(i) + ", 10x12"+",db"+",1:00."; //db - ciê¿ar z databazy
+				doneTraining += listOfExercises.get(i) + ", 10x12"+",db"+",1:00;"; //db - ciê¿ar z databazy
 				myController.txtArea_acceptGrid_CT.appendText((i+1)+")  "+listOfExercises.get(i) + "\n10x12, weight:"+"db"+", 1:00 rest."+"\n\n");
 			}
 			break;
