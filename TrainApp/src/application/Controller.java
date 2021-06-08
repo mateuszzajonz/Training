@@ -58,6 +58,7 @@ public class Controller {
 	public ImageView img;
 	public Button Side_Menu_btn;
 	public AnchorPane Side_Menu_App;
+	public Label dbConnect;
 
 	// settings app
 	public ComboBox plec, comboCw2, comboCw1;
@@ -119,6 +120,7 @@ public class Controller {
 	public Button reroll_acceptGrid_CT;
 	public TextArea txtArea_acceptGrid_CT;
 	Training trainCreate = new Training();
+	static String trainingToDB;
 
 	String radioGrp, imageId;
 	Image image;
@@ -177,7 +179,9 @@ public class Controller {
 		try {
 			ds = new SQLiteDataSource();
 			ds.setUrl("jdbc:sqlite:sample.dbTraining.db");
+			dbConnect.setText("Connected");
 		} catch (Exception e) {
+			dbConnect.setText("Not Connected");
 			e.printStackTrace();
 			System.exit(0);
 		}
@@ -379,9 +383,9 @@ public class Controller {
 			int count = trainCreate.CheckBoxCountTraining();
 			if (count > 0) {
 				if (time >= 20 * count)
-					trainCreate.Generate_Training_Main(time, true, count);
+					trainingToDB = trainCreate.Generate_Training_Main(time, true, count);
 				else
-					trainCreate.Generate_Training_Main(time, false, count);
+					trainingToDB = trainCreate.Generate_Training_Main(time, false, count);
 			} else {
 				Alert alert = new Alert(AlertType.INFORMATION);
 				alert.setTitle("Informacja dla U¯YTKOWNIKA");
@@ -467,6 +471,7 @@ public class Controller {
 	}
 
 	public void Accept_CT_Action() {
-
+		if (!trainingToDB.equals(""))
+			System.out.println(trainingToDB);
 	}
 }

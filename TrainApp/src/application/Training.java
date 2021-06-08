@@ -25,7 +25,8 @@ public class Training extends Main {
 	TreeMap<String, Integer> sorted_map = new TreeMap<String, Integer>(ec);
 	static Controller myController;
 	static boolean enoughTimeForAllExercises;
-
+	static String doneTraining = "";
+	
 	public void AddExerciseFromDatabase() {
 		listOfExercises.add("LEGS,BACK SQUAT");
 		listOfExercises.add("LEGS,BULGARIAN SQUAT");
@@ -58,7 +59,7 @@ public class Training extends Main {
 		return Main.myConrollerToPass;
 	}
 
-	public void Generate_Training_Main(int time, boolean enoughTime, int count) {
+	public String Generate_Training_Main(int time, boolean enoughTime, int count) {
 		listOfExercises.clear();
 		GeneratedExercises.clear();
 		myController = Main_CT_Function();
@@ -81,6 +82,8 @@ public class Training extends Main {
 					"Przepraszamy. Czas przeznaczony na trening okaza³ siê zbyt d³ugi (na nasz¹ bazê æwiczeñ).\nZobacz czy nie wpisa³eœ minut w miejsce godzin.");
 			alert.showAndWait();
 		}
+		
+		return doneTraining;
 	}
 
 	public void ClearExerciseLists() {
@@ -250,24 +253,24 @@ public class Training extends Main {
 			listOfExercises.add(key);
 		}
 		myController.txtArea_acceptGrid_CT.clear();
-		String doneTraining = "";
+		doneTraining = "";
 		myController.txtArea_acceptGrid_CT.appendText("Twój auto-wygenerowany trening to:\n\n");
 		switch (type) {
 		case "strength":
 			for (int i = 0; i < listOfExercises.size(); i++) {
-				doneTraining += listOfExercises.get(i) + ", 5x5, weight:"+"db"+", 3:00 rest."; //db - ciê¿ar z databazy
+				doneTraining += listOfExercises.get(i) + ",5x5"+",db"+",3:00;"; //db - ciê¿ar z databazy
 				myController.txtArea_acceptGrid_CT.appendText((i+1)+")  "+listOfExercises.get(i) + "\n5x5, weight:"+"db"+", 3:00 rest."+"\n\n");
 			}
 			break;
 		case "muscle":
 			for (int i = 0; i < listOfExercises.size(); i++) {
-				doneTraining += listOfExercises.get(i) + ", 6x8, weight:"+"db"+", 2:00 rest."; //db - ciê¿ar z databazy
+				doneTraining += listOfExercises.get(i) + ",6x8"+",db"+",2:00;"; //db - ciê¿ar z databazy
 				myController.txtArea_acceptGrid_CT.appendText((i+1)+")  "+listOfExercises.get(i) + "\n6x8, weight:"+"db"+", 2:00 rest."+"\n\n");
 			}
 			break;
 		case "endurance":
 			for (int i = 0; i < listOfExercises.size(); i++) {
-				doneTraining += listOfExercises.get(i) + ", 10x12, weight:"+"db"+", 1:00 rest."; //db - ciê¿ar z databazy
+				doneTraining += listOfExercises.get(i) + ", 10x12"+",db"+",1:00;"; //db - ciê¿ar z databazy
 				myController.txtArea_acceptGrid_CT.appendText((i+1)+")  "+listOfExercises.get(i) + "\n10x12, weight:"+"db"+", 1:00 rest."+"\n\n");
 			}
 			break;
