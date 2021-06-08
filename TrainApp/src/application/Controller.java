@@ -75,13 +75,13 @@ public class Controller {
 	public LineChart<String, String> Main_Graf;
 	public TextArea Main_OstatniTrening;
 
-	//Side
+	// Side
 //	public TableView<Trainings> table;
 //	public ObservableList<Trainings> obslist = FXCollections.observableArrayList();
 //	public TableColumn<Trainings,String> idColumn = new TableColumn<>("ID");
 //	public TableColumn<Trainings,String> dateColumn = new TableColumn<>("Data");
 //	public TableColumn<Trainings,String> nameColumn = new TableColumn<>("Nazwa");
-	
+
 	// training app
 	public Button btn_CT;
 	public TextField txtbox_minute_CT;
@@ -164,7 +164,6 @@ public class Controller {
 			e.printStackTrace();
 			System.exit(0);
 		}
-
 	}
 
 	public void loadOnStart() {
