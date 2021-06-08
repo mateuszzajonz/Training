@@ -38,6 +38,11 @@
                   <TableColumn fx:id="nameColumn" minWidth="0.0" prefWidth="179.0" text="Nazwa" />
               </columns>
             </TableView>
+            <Label fx:id="dbConnect" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="20.0">
+               <font>
+                  <Font name="System Italic" size="10.0" />
+               </font>
+            </Label>
          </children>
       </AnchorPane>
       <AnchorPane fx:id="Main_App" prefHeight="700.0" prefWidth="400.0" visible="false">
