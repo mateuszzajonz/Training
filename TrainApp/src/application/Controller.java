@@ -81,9 +81,8 @@ public class Controller {
 //	public TableColumn<Trainings,String> idColumn = new TableColumn<>("ID");
 //	public TableColumn<Trainings,String> dateColumn = new TableColumn<>("Data");
 //	public TableColumn<Trainings,String> nameColumn = new TableColumn<>("Nazwa");
-//	
 	
-	
+	// training app
 	public Button btn_CT;
 	public TextField txtbox_minute_CT;
 	public TextField txtbox_hour_CT;
@@ -271,7 +270,6 @@ public class Controller {
 		} catch (IOException e) {
 			System.out.println("Error initializing stream");
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -401,9 +399,7 @@ public class Controller {
 //		
 //
 //		table.setItems(obslist);
-////		table.getColumns().addAll(idColumn,dateColumn,nameColumn);
-		
-				
+////		table.getColumns().addAll(idColumn,dateColumn,nameColumn);					
 	}
 
 	public void ProfilClick(ActionEvent event) {
