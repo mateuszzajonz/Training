@@ -268,26 +268,26 @@ public class Training extends Main {
 		switch (type) {
 		case "strength":
 			for (int i = 0; i < listOfExercises.size(); i++) {
-				weight = getMax(i);
-				doneTraining += listOfExercises.get(i) + ",5x5" + ","+weight+ ",3:00;";
-				myController.txtArea_acceptGrid_CT.appendText(
-						(i + 1) + ")  " + listOfExercises.get(i) + "\n5x5, weight: " + weight + ", 3:00 rest." + "\n\n");
+				weight = getMax(i, 5);
+				doneTraining += listOfExercises.get(i) + ",5x5" + "," + weight + ",3:00;";
+				myController.txtArea_acceptGrid_CT.appendText((i + 1) + ")  " + listOfExercises.get(i)
+						+ "\n5x5, weight: " + weight + ", 3:00 rest." + "\n\n");
 			}
 			break;
 		case "muscle":
 			for (int i = 0; i < listOfExercises.size(); i++) {
-				weight = getMax(i);
-				doneTraining += listOfExercises.get(i) + ",6x8" + "," +weight+ ",2:00;";
-				myController.txtArea_acceptGrid_CT.appendText(
-						(i + 1) + ")  " + listOfExercises.get(i) + "\n6x8, weight: " + weight + ", 2:00 rest." + "\n\n");
+				weight = getMax(i, 8);
+				doneTraining += listOfExercises.get(i) + ",6x8" + "," + weight + ",2:00;";
+				myController.txtArea_acceptGrid_CT.appendText((i + 1) + ")  " + listOfExercises.get(i)
+						+ "\n6x8, weight: " + weight + ", 2:00 rest." + "\n\n");
 			}
 			break;
 		case "endurance":
 			for (int i = 0; i < listOfExercises.size(); i++) {
-				weight = getMax(i);
-				doneTraining += listOfExercises.get(i) + ", 10x12" + "," +weight+ ",1:00;";
-				myController.txtArea_acceptGrid_CT.appendText(
-						(i + 1) + ")  " + listOfExercises.get(i) + "\n10x12, weight: " + weight + ", 1:00 rest." + "\n\n");
+				weight = getMax(i, 12);
+				doneTraining += listOfExercises.get(i) + ", 10x12" + "," + weight + ",1:00;";
+				myController.txtArea_acceptGrid_CT.appendText((i + 1) + ")  " + listOfExercises.get(i)
+						+ "\n10x12, weight: " + weight + ", 1:00 rest." + "\n\n");
 			}
 			break;
 		}
@@ -296,22 +296,33 @@ public class Training extends Main {
 		myController.Create_grid_CT.setVisible(false);
 	}
 
-	public String getMax(int i)
-	{
-		String weight = "";
+	public String getMax(int i, int countMax) {
+		double weight = 0;
 		for (String name : exerciseMAX) {
 			String[] word = name.split("\\,");
 			if (word[0].equals(listOfExercises.get(i).toString())) {
-				if (word[1].equals(null)||word[1].equals("null"))
-					weight = "?";
-				else
-					weight = word[1];
+				if (word[1].equals(null) || word[1].equals("null"))
+					weight = 0.0;
+				else {
+					switch (countMax) {
+					case 5:
+						weight = Double.parseDouble(word[1])*0.80;
+						break;
+					case 8:
+						weight = Double.parseDouble(word[1])*0.70;
+						break;
+					case 12:
+						weight = Double.parseDouble(word[1])*0.60;
+						break;
+					}				
+				}
 				break;
 			}
 		}
-		return weight;
+
+		return weight + "";
 	}
-	
+
 	public void AddExercisesToLists(Controller myController) {
 		if (myController.chbox_legs_CT.isSelected()) {
 			for (String name : listOfExercises) {

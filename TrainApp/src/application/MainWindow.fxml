@@ -28,46 +28,8 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="700.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Controller">
+<AnchorPane minWidth="400.0" prefHeight="700.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Controller">
    <children>
-      <AnchorPane fx:id="OwnTrain_App" prefHeight="700.0" prefWidth="400.0">
-         <children>
-            <Button fx:id="Train_Del" layoutX="329.0" layoutY="195.0" mnemonicParsing="false" onAction="#DelExercise" prefHeight="28.0" prefWidth="50.0">
-               <graphic>
-                  <ImageView fitHeight="21.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@x-mark.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </Button>
-            <Label alignment="CENTER" layoutX="87.0" layoutY="36.0" prefHeight="30.0" prefWidth="206.0" text="OWN TRAINING!" AnchorPane.leftAnchor="87.0" AnchorPane.rightAnchor="87.0">
-               <font>
-                  <Font name="System Bold" size="20.0" />
-               </font>
-            </Label>
-            <ListView fx:id="Train_list" layoutX="26.0" layoutY="132.0" minWidth="296.0" prefHeight="335.0" prefWidth="289.0" AnchorPane.leftAnchor="26.0" AnchorPane.rightAnchor="85.0" />
-            <HBox layoutX="26.0" layoutY="104.0" prefHeight="25.0" prefWidth="353.0">
-               <children>
-                  <ComboBox fx:id="Train_ex" prefHeight="25.0" prefWidth="135.0" promptText="EXERCISE" />
-                  <ComboBox fx:id="Train_series" minWidth="35.0" prefHeight="25.0" prefWidth="55.0" promptText="S." />
-                  <ComboBox fx:id="Train_series1" layoutX="131.0" layoutY="10.0" minWidth="35.0" prefHeight="25.0" prefWidth="55.0" promptText="R." />
-                  <TextField fx:id="Train_Weight" alignment="CENTER" prefHeight="25.0" prefWidth="40.0" promptText="kg" />
-                  <ComboBox fx:id="Train_time" prefHeight="25.0" prefWidth="68.0" promptText="T." />
-               </children>
-            </HBox>
-            <Button fx:id="Train_Add" layoutX="329.0" layoutY="150.0" mnemonicParsing="false" onAction="#AddExercise" prefHeight="28.0" prefWidth="50.0">
-               <graphic>
-                  <ImageView fitHeight="21.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@add.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </Button>
-            <Button fx:id="Train_Save" layoutX="26.0" layoutY="477.0" mnemonicParsing="false" onAction="#SaveExercise" prefHeight="25.0" prefWidth="289.0" text="Zapisz trening" />
-         </children>
-      </AnchorPane>
       <AnchorPane fx:id="Main_App" prefHeight="700.0" prefWidth="400.0" visible="false">
          <children>
             <Button fx:id="Main_DeleteOne" layoutX="64.0" layoutY="368.0" mnemonicParsing="false" onAction="#Delete_Training" text="Usuń rekord" />
@@ -134,6 +96,75 @@
                </padding>
             </TextArea>
             <Button fx:id="btn_hideTraining" alignment="CENTER" layoutX="154.0" layoutY="576.0" mnemonicParsing="false" onAction="#Hide_Training" text="Hide Training" textAlignment="CENTER" visible="false" AnchorPane.bottomAnchor="94.0" AnchorPane.leftAnchor="154.0" AnchorPane.rightAnchor="138.0">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font>
+            </Button>
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="OwnTrain_App" prefHeight="700.0" prefWidth="400.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <AnchorPane fx:id="Anchor_Fix_OT" prefHeight="700.0" prefWidth="400.0" visible="false" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <Button layoutX="25.0" layoutY="518.0" mnemonicParsing="false" onAction="#Change_Max" prefHeight="25.0" prefWidth="144.0" text=" CHANGE SELECTED TO:" />
+                  <Label alignment="CENTER" layoutX="98.0" layoutY="51.0" prefHeight="30.0" prefWidth="206.0" text="FIX MAXES!">
+                     <font>
+                        <Font name="System Bold" size="20.0" />
+                     </font>
+                  </Label>
+                  <TableView fx:id="table_Maxes" fixedCellSize="0.0" layoutX="25.0" layoutY="107.0" prefHeight="405.0" prefWidth="350.0">
+                    <columns>
+                      <TableColumn fx:id="exerciseCol" maxWidth="215.0" prefWidth="215.0" resizable="false" sortable="false" text="EXERCISE" />
+                      <TableColumn fx:id="maxCol" maxWidth="135.0" prefWidth="120.0" resizable="false" sortable="false" text="MAX" />
+                    </columns>
+                  </TableView>
+                  <TextField fx:id="fix_Max" layoutX="178.0" layoutY="518.0" prefHeight="25.0" prefWidth="66.0" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="Anchor_Create_OT" minWidth="400.0" prefHeight="700.0" prefWidth="400.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <Button fx:id="Train_Del" layoutX="327.0" layoutY="197.0" mnemonicParsing="false" onAction="#DelExercise" prefHeight="28.0" prefWidth="50.0">
+                     <graphic>
+                        <ImageView fitHeight="21.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@x-mark.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Label alignment="CENTER" layoutX="87.0" layoutY="49.0" prefHeight="30.0" prefWidth="206.0" text="OWN TRAINING!" AnchorPane.leftAnchor="87.0" AnchorPane.rightAnchor="87.0">
+                     <font>
+                        <Font name="System Bold" size="20.0" />
+                     </font>
+                  </Label>
+                  <ListView fx:id="Train_list" layoutX="24.0" layoutY="141.0" minWidth="296.0" prefHeight="373.0" prefWidth="296.0" AnchorPane.leftAnchor="24.0" AnchorPane.rightAnchor="87.0" />
+                  <HBox layoutX="24.0" layoutY="109.0" prefHeight="25.0" prefWidth="353.0">
+                     <children>
+                        <ComboBox fx:id="Train_ex" prefHeight="25.0" prefWidth="135.0" promptText="EXERCISE" />
+                        <ComboBox fx:id="Train_series" minWidth="35.0" prefHeight="25.0" prefWidth="55.0" promptText="S." />
+                        <ComboBox fx:id="Train_series1" layoutX="131.0" layoutY="10.0" minWidth="35.0" prefHeight="25.0" prefWidth="55.0" promptText="R." />
+                        <TextField fx:id="Train_Weight" alignment="CENTER" prefHeight="25.0" prefWidth="40.0" promptText="kg" />
+                        <ComboBox fx:id="Train_time" prefHeight="25.0" prefWidth="68.0" promptText="T." />
+                     </children>
+                  </HBox>
+                  <Button fx:id="Train_Add" layoutX="327.0" layoutY="152.0" mnemonicParsing="false" onAction="#AddExercise" prefHeight="28.0" prefWidth="50.0">
+                     <graphic>
+                        <ImageView fitHeight="21.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@add.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button fx:id="Train_Save" layoutX="24.0" layoutY="520.0" mnemonicParsing="false" onAction="#SaveExercise" prefHeight="25.0" prefWidth="296.0" text="Zapisz trening" />
+               </children>
+            </AnchorPane>
+            <Button layoutX="249.0" layoutY="574.0" mnemonicParsing="false" onAction="#Change_Maxes_OT" text="CHANGE MAXES" AnchorPane.bottomAnchor="96.0" AnchorPane.leftAnchor="249.0" AnchorPane.rightAnchor="23.0" AnchorPane.topAnchor="574.0">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font>
+            </Button>
+            <Button layoutX="24.0" layoutY="574.0" mnemonicParsing="false" onAction="#Create_Training_OT" text="CREATE TRAINING" AnchorPane.bottomAnchor="96.0" AnchorPane.leftAnchor="24.0" AnchorPane.rightAnchor="235.0" AnchorPane.topAnchor="574.0">
                <font>
                   <Font name="System Bold" size="14.0" />
                </font>

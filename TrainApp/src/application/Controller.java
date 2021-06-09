@@ -80,7 +80,7 @@ public class Controller {
 	ObservableList<finishedTrainings> obslist = FXCollections.observableArrayList();
 	ObservableList<String> obslist2 = FXCollections.observableArrayList();
 	ObservableList<String> obslist3 = FXCollections.observableArrayList();
-	
+
 	// training app
 	public Button btn_CT;
 	public TextField txtbox_minute_CT;
@@ -117,6 +117,15 @@ public class Controller {
 	public ListView<String> Train_list;
 	String training;
 	ArrayList<String> Train_AList = new ArrayList<String>();
+
+	// change fix maxes and create training
+	public AnchorPane Anchor_Fix_OT;
+	public AnchorPane Anchor_Create_OT;
+	public TextField fix_Max;
+	public TableColumn<ExercisesDB, String> exerciseCol;
+	public TableColumn<ExercisesDB, String> maxCol;
+	public TableView<ExercisesDB> table_Maxes;
+	ObservableList<ExercisesDB> obslist1 = FXCollections.observableArrayList();
 
 	String radioGrp, imageId;
 	Image image;
@@ -168,7 +177,7 @@ public class Controller {
 			System.out.println("Error initializing stream");
 		}
 	}
-	
+
 	public void LoadTableView() {
 		table.getItems().clear();
 		try {
@@ -203,6 +212,7 @@ public class Controller {
 		loadProfil();
 		loadMain();
 		LoadTableView();
+		Maxes_Table();
 		try {
 			Connection con = ds.getConnection();
 			ResultSet rs = con.createStatement().executeQuery("Select exercises from Exercises");
@@ -248,6 +258,26 @@ public class Controller {
 		train.AddExerciseFromDatabase();
 	}
 
+	public void Maxes_Table()
+	{
+		table_Maxes.getItems().clear();
+		try {
+			Connection con = ds.getConnection();
+			ResultSet rs = con.createStatement().executeQuery("Select * from Exercises");
+			while (rs.next()) {
+				obslist1.add(new ExercisesDB(rs.getString("id"), rs.getString("type"), rs.getString("exercises"),
+						rs.getString("max")));
+			}
+		} catch (SQLException e) {
+			System.out.print("B³¹d");
+		}
+
+		exerciseCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getExercises()));
+		maxCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getMax()));
+		
+		table_Maxes.setItems(obslist1);
+	}
+	
 	private void loadMain() {
 		Main_Image.setImage(image);
 		Main_Imie.setText(dane[0]);
@@ -529,7 +559,7 @@ public class Controller {
 
 	public void AddExercise(ActionEvent event) {
 		if (!(Train_ex.getValue() == null) && !(Train_series.getValue() == null) && !(Train_series1.getValue() == null)
-				&& !(Train_Weight.equals("")) && !(Train_time.getValue() == null)) {
+				&& !(Train_Weight.equals(null)) && !(Train_time.getValue() == null)) {
 			Train_list.getItems().clear();
 			Train_AList.add(Train_ex.getValue() + ", " + Train_series.getValue() + "x" + Train_series1.getValue() + ", "
 					+ Train_Weight.getText() + ", " + Train_time.getValue());
@@ -603,5 +633,29 @@ public class Controller {
 		Training_App.setVisible(true);
 		scrollPane.setVisible(false);
 		OwnTrain_App.setVisible(false);
+	}
+	
+	public void Change_Max(ActionEvent event) {
+		try {
+			double max = Double.parseDouble(fix_Max.getText());
+			Connection con = ds.getConnection();
+			PreparedStatement ps = con.prepareStatement("UPDATE Exercises SET max = " +max+ " WHERE id = ?;");
+			ExercisesDB train = table_Maxes.getSelectionModel().getSelectedItem();
+			ps.setString(1, train.getId());
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			System.out.print("B³¹d" + e);
+		}
+		Maxes_Table();
+	}
+
+	public void Change_Maxes_OT(ActionEvent event) {
+		Anchor_Fix_OT.setVisible(true);
+		Anchor_Create_OT.setVisible(false);	
+	}
+
+	public void Create_Training_OT(ActionEvent event) {
+		Anchor_Fix_OT.setVisible(false);
+		Anchor_Create_OT.setVisible(true);	
 	}
 }
