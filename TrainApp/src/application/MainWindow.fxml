@@ -9,6 +9,7 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TableColumn?>
@@ -29,7 +30,43 @@
 
 <AnchorPane prefHeight="700.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Controller">
    <children>
-      <AnchorPane fx:id="Main_App" prefHeight="700.0" prefWidth="400.0">
+      <AnchorPane fx:id="OwnTrain_App" prefHeight="700.0" prefWidth="400.0">
+         <children>
+            <Button fx:id="Train_Del" layoutX="323.0" layoutY="225.0" mnemonicParsing="false" onAction="#DelExercise" prefHeight="28.0" prefWidth="56.0">
+               <graphic>
+                  <ImageView fitHeight="21.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@x-mark.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Label alignment="CENTER" layoutX="87.0" layoutY="36.0" prefHeight="30.0" prefWidth="206.0" text="Stwórz własny trening!" AnchorPane.leftAnchor="87.0" AnchorPane.rightAnchor="87.0">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+            <ListView fx:id="Train_list" layoutX="26.0" layoutY="132.0" prefHeight="335.0" prefWidth="289.0" AnchorPane.leftAnchor="26.0" AnchorPane.rightAnchor="85.0" />
+            <HBox layoutX="26.0" layoutY="104.0" prefHeight="25.0" prefWidth="289.0">
+               <children>
+                  <ComboBox fx:id="Train_ex" prefHeight="25.0" prefWidth="163.0" />
+                  <ComboBox fx:id="Train_series" prefHeight="25.0" prefWidth="91.0" />
+                  <ComboBox fx:id="Train_time" prefHeight="25.0" prefWidth="102.0" />
+               </children>
+            </HBox>
+            <Button fx:id="Train_Add" layoutX="323.0" layoutY="103.0" mnemonicParsing="false" onAction="#AddExercise" prefHeight="28.0" prefWidth="56.0">
+               <graphic>
+                  <ImageView fitHeight="21.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@add.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Button fx:id="Train_Save" layoutX="26.0" layoutY="477.0" mnemonicParsing="false" onAction="#SaveExercise" prefHeight="25.0" prefWidth="289.0" text="Zapisz trening" />
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="Main_App" prefHeight="700.0" prefWidth="400.0" visible="false">
          <children>
             <Button fx:id="Main_DeleteOne" layoutX="64.0" layoutY="368.0" mnemonicParsing="false" onAction="#Delete_Training" text="Usuń rekord" />
             <TableView fx:id="table" layoutX="30.0" layoutY="158.0" prefHeight="200.0" prefWidth="340.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0">
@@ -294,9 +331,7 @@
                </toggleGroup>
             </RadioButton>
             <RadioButton fx:id="ostatnitrening" layoutX="113.0" layoutY="419.0" mnemonicParsing="false" selected="true" text="Ostatni trening" toggleGroup="$radioBtns" />
-            <ComboBox fx:id="comboCw2" layoutX="68.0" layoutY="499.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="40.0" prefWidth="300.0" promptText="Ulubione ćwiczenie" />
             <ComboBox fx:id="comboCw1" layoutX="67.0" layoutY="450.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="40.0" prefWidth="300.0" promptText="Ulubione ćwiczenie" />
-            <CheckBox fx:id="checkCW2" layoutX="41.0" layoutY="499.0" mnemonicParsing="false" />
             <CheckBox fx:id="checkCW1" graphicTextGap="12.0" layoutX="41.0" layoutY="461.0" maxHeight="12.0" maxWidth="123.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="7.0" />
          </children>
       </AnchorPane>
@@ -360,6 +395,15 @@
                      </image></ImageView>
                </graphic>
             </Button>
+            <Button mnemonicParsing="false" onAction="#OwnTrainClick" prefHeight="70.0" prefWidth="133.0">
+               <graphic>
+                  <ImageView fitHeight="45.0" fitWidth="52.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@dziennik.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
             <Button mnemonicParsing="false" onAction="#ProfilClick" prefHeight="70.0" prefWidth="133.0">
                <graphic>
                   <ImageView fitHeight="45.0" fitWidth="52.0" pickOnBounds="true" preserveRatio="true">
@@ -370,17 +414,5 @@
             </Button>
          </children>
       </HBox>
-      <Button fx:id="Side_Menu_btn" mnemonicParsing="false" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="14.0">
-         <font>
-            <Font name="Arial" size="18.0" />
-         </font>
-         <graphic>
-            <ImageView fitHeight="22.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@settings.png" />
-               </image>
-            </ImageView>
-         </graphic>
-      </Button>
    </children>
 </AnchorPane>
