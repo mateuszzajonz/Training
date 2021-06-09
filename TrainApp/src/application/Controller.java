@@ -78,9 +78,9 @@ public class Controller {
 	public TableColumn<finishedTrainings, String> dateCol;
 	public TableColumn<finishedTrainings, String> nameCol;
 	ObservableList<finishedTrainings> obslist = FXCollections.observableArrayList();
-	ObservableList<String> obslist3 = FXCollections.observableArrayList();
 	ObservableList<String> obslist2 = FXCollections.observableArrayList();
-
+	ObservableList<String> obslist3 = FXCollections.observableArrayList();
+	
 	// training app
 	public Button btn_CT;
 	public TextField txtbox_minute_CT;
@@ -105,17 +105,19 @@ public class Controller {
 	public Button btn_hideTraining;
 	public TextArea Show_Training_Table;
 
-	//create own training
+	// create own training
 	public Button Train_Add;
 	public Button Train_Del;
 	public Button Train_Save;
 	public ComboBox<String> Train_ex;
 	public ComboBox<String> Train_time;
 	public ComboBox<String> Train_series;
+	public ComboBox<String> Train_series1;
+	public TextField Train_Weight;
 	public ListView<String> Train_list;
 	String training;
 	ArrayList<String> Train_AList = new ArrayList<String>();
-	
+
 	String radioGrp, imageId;
 	Image image;
 	String[] dane;
@@ -166,7 +168,7 @@ public class Controller {
 			System.out.println("Error initializing stream");
 		}
 	}
-
+	
 	public void LoadTableView() {
 		table.getItems().clear();
 		try {
@@ -216,8 +218,11 @@ public class Controller {
 		plec.getItems().addAll("Mê¿czyzna", "Kobieta");
 		comboCw1.getItems().addAll(obslist2);
 		Train_ex.getItems().addAll(obslist2);
-		Train_series.getItems().addAll("3x3", "5x5");
-		Train_time.getItems().addAll("1:00","1:30","2:00","2:30","3:00","3:30","4:00","4:30","5:00");
+		Train_series.getItems().addAll("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15",
+				"16", "17", "18", "19", "20");
+		Train_series1.getItems().addAll("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15",
+				"16", "17", "18", "19", "20");
+		Train_time.getItems().addAll("0:30", "1:00", "1:30", "2:00", "2:30", "3:00", "3:30", "4:00", "4:30", "5:00");
 
 		label1.setDisable(true);
 		imie.setDisable(true);
@@ -497,32 +502,39 @@ public class Controller {
 			System.out.print("B³¹d" + e);
 		}
 		String[] words = done.split(";");
-		if (!done.equals("")) {
-			Show_Training_Table.setVisible(true);
-			btn_hideTraining.setVisible(true);
-			Show_Training_Table.setText("Twój trening z dnia \""+table.getSelectionModel().getSelectedItem().date+"\" to:\n\n");
-			for (int i = 0; i < words.length; i++) {
-				String[] wordsInside = words[i].split("\\,");
-				Show_Training_Table.appendText("Æwiczenie nr."+(i+1)+":\t\t\t"+wordsInside[0]+"\n");
-				Show_Training_Table.appendText("Serie x powtórzenia:\t"+wordsInside[1]+"\n");
-				Show_Training_Table.appendText("Ciê¿ar:\t\t\t\t"+wordsInside[2]+"\n");
-				Show_Training_Table.appendText("Czas na przerwê:\t\t"+wordsInside[3]+"\n\n");
+		try {
+			if (!done.equals("")) {
+				Show_Training_Table.setVisible(true);
+				btn_hideTraining.setVisible(true);
+				Show_Training_Table.setText(
+						"Twój trening z dnia \"" + table.getSelectionModel().getSelectedItem().date + "\" to:\n\n");
+				for (int i = 0; i < words.length; i++) {
+					String[] wordsInside = words[i].split("\\,");
+					Show_Training_Table.appendText("Æwiczenie nr." + (i + 1) + ":\t\t\t" + wordsInside[0] + "\n");
+					Show_Training_Table.appendText("Serie x powtórzenia:\t" + wordsInside[1] + "\n");
+					Show_Training_Table.appendText("Ciê¿ar:\t\t\t\t" + wordsInside[2] + "\n");
+					Show_Training_Table.appendText("Czas na przerwê:\t\t" + wordsInside[3] + "\n\n");
+				}
 			}
+		} catch (Exception e) {
+			System.out.print("B³¹d" + e);
 		}
+
 	}
 
 	public void Hide_Training(ActionEvent event) {
 		Show_Training_Table.setVisible(false);
 		btn_hideTraining.setVisible(false);
 	}
-		
+
 	public void AddExercise(ActionEvent event) {
-		if(!(Train_ex.getValue() == null) && !(Train_series.getValue() == null)&& !(Train_time.getValue() == null)) {
-		Train_list.getItems().clear();
-		Train_AList.add(Train_ex.getValue()+", "+ Train_series.getValue() +", "+ Train_time.getValue());
-		Train_list.getItems().addAll(Train_AList);
-		}
-		else {
+		if (!(Train_ex.getValue() == null) && !(Train_series.getValue() == null) && !(Train_series1.getValue() == null)
+				&& !(Train_Weight.equals("")) && !(Train_time.getValue() == null)) {
+			Train_list.getItems().clear();
+			Train_AList.add(Train_ex.getValue() + ", " + Train_series.getValue() + "x" + Train_series1.getValue() + ", "
+					+ Train_Weight.getText() + ", " + Train_time.getValue());
+			Train_list.getItems().addAll(Train_AList);
+		} else {
 			Alert alert = new Alert(AlertType.WARNING);
 			alert.setTitle("");
 			alert.setHeaderText(null);
@@ -530,23 +542,22 @@ public class Controller {
 			alert.showAndWait();
 		}
 	}
-	
+
 	public void DelExercise(ActionEvent event) {
 		int a = Train_list.getSelectionModel().getSelectedIndex();
-		if(a>=0) {
-		Train_AList.remove(a);
-		Train_list.getItems().remove(a);
+		if (a >= 0) {
+			Train_AList.remove(a);
+			Train_list.getItems().remove(a);
 		}
 	}
-	
+
 	public void SaveExercise(ActionEvent event) {
 		try {
-			
-			for(int i=0;i<Train_AList.size();i++) {
-				if(i==0) {
+			for (int i = 0; i < Train_AList.size(); i++) {
+				if (i == 0) {
 					training = Train_AList.get(0);
-				}else
-				training = training +"; "+ Train_AList.get(i);
+				} else
+					training = training + "; " + Train_AList.get(i);
 			}
 			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");
 			LocalDateTime now = LocalDateTime.now();
@@ -559,7 +570,8 @@ public class Controller {
 			System.out.print("B³¹d" + e);
 		}
 	}
-	//Zmiana okna
+
+	// Zmiana okna
 	public void MainClick(ActionEvent event) {
 		Main_App.setVisible(true);
 		Settings_App.setVisible(false);
@@ -568,7 +580,7 @@ public class Controller {
 		OwnTrain_App.setVisible(false);
 		loadMain();
 	}
-	
+
 	public void OwnTrainClick(ActionEvent event) {
 		Main_App.setVisible(false);
 		Settings_App.setVisible(false);
@@ -576,7 +588,7 @@ public class Controller {
 		scrollPane.setVisible(false);
 		OwnTrain_App.setVisible(true);
 	}
-	
+
 	public void ProfilClick(ActionEvent event) {
 		Settings_App.setVisible(true);
 		Main_App.setVisible(false);
@@ -584,7 +596,7 @@ public class Controller {
 		scrollPane.setVisible(false);
 		OwnTrain_App.setVisible(false);
 	}
-	
+
 	public void TrainingClick(ActionEvent event) {
 		Settings_App.setVisible(false);
 		Main_App.setVisible(false);

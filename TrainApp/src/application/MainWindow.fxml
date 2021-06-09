@@ -32,7 +32,7 @@
    <children>
       <AnchorPane fx:id="OwnTrain_App" prefHeight="700.0" prefWidth="400.0">
          <children>
-            <Button fx:id="Train_Del" layoutX="323.0" layoutY="225.0" mnemonicParsing="false" onAction="#DelExercise" prefHeight="28.0" prefWidth="56.0">
+            <Button fx:id="Train_Del" layoutX="329.0" layoutY="195.0" mnemonicParsing="false" onAction="#DelExercise" prefHeight="28.0" prefWidth="50.0">
                <graphic>
                   <ImageView fitHeight="21.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -41,20 +41,22 @@
                   </ImageView>
                </graphic>
             </Button>
-            <Label alignment="CENTER" layoutX="87.0" layoutY="36.0" prefHeight="30.0" prefWidth="206.0" text="Stwórz własny trening!" AnchorPane.leftAnchor="87.0" AnchorPane.rightAnchor="87.0">
+            <Label alignment="CENTER" layoutX="87.0" layoutY="36.0" prefHeight="30.0" prefWidth="206.0" text="OWN TRAINING!" AnchorPane.leftAnchor="87.0" AnchorPane.rightAnchor="87.0">
                <font>
-                  <Font size="20.0" />
+                  <Font name="System Bold" size="20.0" />
                </font>
             </Label>
-            <ListView fx:id="Train_list" layoutX="26.0" layoutY="132.0" prefHeight="335.0" prefWidth="289.0" AnchorPane.leftAnchor="26.0" AnchorPane.rightAnchor="85.0" />
-            <HBox layoutX="26.0" layoutY="104.0" prefHeight="25.0" prefWidth="289.0">
+            <ListView fx:id="Train_list" layoutX="26.0" layoutY="132.0" minWidth="296.0" prefHeight="335.0" prefWidth="289.0" AnchorPane.leftAnchor="26.0" AnchorPane.rightAnchor="85.0" />
+            <HBox layoutX="26.0" layoutY="104.0" prefHeight="25.0" prefWidth="353.0">
                <children>
-                  <ComboBox fx:id="Train_ex" prefHeight="25.0" prefWidth="163.0" />
-                  <ComboBox fx:id="Train_series" prefHeight="25.0" prefWidth="91.0" />
-                  <ComboBox fx:id="Train_time" prefHeight="25.0" prefWidth="102.0" />
+                  <ComboBox fx:id="Train_ex" prefHeight="25.0" prefWidth="135.0" promptText="EXERCISE" />
+                  <ComboBox fx:id="Train_series" minWidth="35.0" prefHeight="25.0" prefWidth="55.0" promptText="S." />
+                  <ComboBox fx:id="Train_series1" layoutX="131.0" layoutY="10.0" minWidth="35.0" prefHeight="25.0" prefWidth="55.0" promptText="R." />
+                  <TextField fx:id="Train_Weight" alignment="CENTER" prefHeight="25.0" prefWidth="40.0" promptText="kg" />
+                  <ComboBox fx:id="Train_time" prefHeight="25.0" prefWidth="68.0" promptText="T." />
                </children>
             </HBox>
-            <Button fx:id="Train_Add" layoutX="323.0" layoutY="103.0" mnemonicParsing="false" onAction="#AddExercise" prefHeight="28.0" prefWidth="56.0">
+            <Button fx:id="Train_Add" layoutX="329.0" layoutY="150.0" mnemonicParsing="false" onAction="#AddExercise" prefHeight="28.0" prefWidth="50.0">
                <graphic>
                   <ImageView fitHeight="21.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -402,7 +404,7 @@
                <graphic>
                   <ImageView fitHeight="45.0" fitWidth="52.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@dziennik.png" />
+                        <Image url="@dice.png" />
                      </image></ImageView>
                </graphic>
             </Button>

@@ -1,11 +1,17 @@
 package application;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.TreeMap;
+
+import org.sqlite.SQLiteDataSource;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -19,39 +25,43 @@ public class Training extends Main {
 	List<String> exerciseChest = new LinkedList<>();
 	List<String> exerciseShoulders = new LinkedList<>();
 	List<String> exerciseArms = new LinkedList<>();
-	List<String> exerciseABS = new LinkedList<>();
+	List<String> exerciseMAX = new LinkedList<>();
 	HashMap<String, Integer> GeneratedExercises = new HashMap<String, Integer>();
 	ExerciseComparator ec = new ExerciseComparator(GeneratedExercises);
 	TreeMap<String, Integer> sorted_map = new TreeMap<String, Integer>(ec);
 	static Controller myController;
 	static boolean enoughTimeForAllExercises;
 	static String doneTraining = "";
-	
+
+	SQLiteDataSource ds = null;
+	ArrayList<ExercisesDB> obslist = new ArrayList<ExercisesDB>();
+
+	public void loadDB() {
+		try {
+			ds = new SQLiteDataSource();
+			ds.setUrl("jdbc:sqlite:sample.dbTraining.db");
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(0);
+		}
+	}
+
 	public void AddExerciseFromDatabase() {
-		listOfExercises.add("LEGS,BACK SQUAT");
-		listOfExercises.add("LEGS,BULGARIAN SQUAT");
-		listOfExercises.add("LEGS,DEADLIFT");
-		listOfExercises.add("LEGS,FRONT SQUAT");
-		listOfExercises.add("BACK,PENDLAY ROW");
-		listOfExercises.add("BACK,DEADLIFT");
-		listOfExercises.add("BACK,LAT PULLDOWN");
-		listOfExercises.add("BACK,ROMANIAN DEADLIFT");
-		listOfExercises.add("CHEST,BENCH PRESS");
-		listOfExercises.add("CHEST,BUTTERFLY");
-		listOfExercises.add("CHEST,DIPS");
-		listOfExercises.add("CHEST,INCLINE BENCH PRESS");
-		listOfExercises.add("SHOULDERS,OVER HEAD PRESS");
-		listOfExercises.add("SHOULDERS,LU RISES");
-		listOfExercises.add("SHOULDERS,PUSH PRESS");
-		listOfExercises.add("SHOULDERS,BARBELL SHRUG");
-		listOfExercises.add("ARMS,PREACHER CURLS");
-		listOfExercises.add("ARMS,SKULL CRUSHERS");
-		listOfExercises.add("ARMS,KICKBACKS");
-		listOfExercises.add("ARMS,HAMMER CURLS");
-		listOfExercises.add("ABS,PLANK");
-		listOfExercises.add("ABS,V-UPS");
-		listOfExercises.add("ABS,RUSSIAN TWIST");
-		listOfExercises.add("ABS,CRUNCHES");
+		loadDB();
+		try {
+			Connection con = ds.getConnection();
+			ResultSet rs = con.createStatement().executeQuery("Select * from Exercises");
+			while (rs.next()) {
+				obslist.add(new ExercisesDB(rs.getString("id"), rs.getString("type"), rs.getString("exercises"),
+						rs.getString("max")));
+			}
+		} catch (SQLException e) {
+			System.out.print("B³¹d");
+		}
+		for (ExercisesDB name : obslist) {
+			listOfExercises.add(name.type + "," + name.exercises);
+			exerciseMAX.add(name.exercises + "," + name.max);
+		}
 	}
 
 	public Controller Main_CT_Function() // CT - Create Training
@@ -82,7 +92,7 @@ public class Training extends Main {
 					"Przepraszamy. Czas przeznaczony na trening okaza³ siê zbyt d³ugi (na nasz¹ bazê æwiczeñ).\nZobacz czy nie wpisa³eœ minut w miejsce godzin.");
 			alert.showAndWait();
 		}
-		
+
 		return doneTraining;
 	}
 
@@ -92,7 +102,6 @@ public class Training extends Main {
 		exerciseChest.clear();
 		exerciseShoulders.clear();
 		exerciseArms.clear();
-		exerciseABS.clear();
 	}
 
 	public void Generate_Training_EnoughTime(int time, int count) {
@@ -238,6 +247,7 @@ public class Training extends Main {
 
 	public void FinalTraining(String type, boolean enoughTime) {
 		int count = 1;
+		String weight = "";
 
 		if (enoughTime && enoughTimeForAllExercises) {
 			count = 1;
@@ -258,20 +268,26 @@ public class Training extends Main {
 		switch (type) {
 		case "strength":
 			for (int i = 0; i < listOfExercises.size(); i++) {
-				doneTraining += listOfExercises.get(i) + ",5x5"+",db"+",3:00;"; //db - ciê¿ar z databazy
-				myController.txtArea_acceptGrid_CT.appendText((i+1)+")  "+listOfExercises.get(i) + "\n5x5, weight:"+"db"+", 3:00 rest."+"\n\n");
+				weight = getMax(i);
+				doneTraining += listOfExercises.get(i) + ",5x5" + ","+weight+ ",3:00;";
+				myController.txtArea_acceptGrid_CT.appendText(
+						(i + 1) + ")  " + listOfExercises.get(i) + "\n5x5, weight: " + weight + ", 3:00 rest." + "\n\n");
 			}
 			break;
 		case "muscle":
 			for (int i = 0; i < listOfExercises.size(); i++) {
-				doneTraining += listOfExercises.get(i) + ",6x8"+",db"+",2:00;"; //db - ciê¿ar z databazy
-				myController.txtArea_acceptGrid_CT.appendText((i+1)+")  "+listOfExercises.get(i) + "\n6x8, weight:"+"db"+", 2:00 rest."+"\n\n");
+				weight = getMax(i);
+				doneTraining += listOfExercises.get(i) + ",6x8" + "," +weight+ ",2:00;";
+				myController.txtArea_acceptGrid_CT.appendText(
+						(i + 1) + ")  " + listOfExercises.get(i) + "\n6x8, weight: " + weight + ", 2:00 rest." + "\n\n");
 			}
 			break;
 		case "endurance":
 			for (int i = 0; i < listOfExercises.size(); i++) {
-				doneTraining += listOfExercises.get(i) + ", 10x12"+",db"+",1:00;"; //db - ciê¿ar z databazy
-				myController.txtArea_acceptGrid_CT.appendText((i+1)+")  "+listOfExercises.get(i) + "\n10x12, weight:"+"db"+", 1:00 rest."+"\n\n");
+				weight = getMax(i);
+				doneTraining += listOfExercises.get(i) + ", 10x12" + "," +weight+ ",1:00;";
+				myController.txtArea_acceptGrid_CT.appendText(
+						(i + 1) + ")  " + listOfExercises.get(i) + "\n10x12, weight: " + weight + ", 1:00 rest." + "\n\n");
 			}
 			break;
 		}
@@ -280,11 +296,27 @@ public class Training extends Main {
 		myController.Create_grid_CT.setVisible(false);
 	}
 
+	public String getMax(int i)
+	{
+		String weight = "";
+		for (String name : exerciseMAX) {
+			String[] word = name.split("\\,");
+			if (word[0].equals(listOfExercises.get(i).toString())) {
+				if (word[1].equals(null)||word[1].equals("null"))
+					weight = "?";
+				else
+					weight = word[1];
+				break;
+			}
+		}
+		return weight;
+	}
+	
 	public void AddExercisesToLists(Controller myController) {
 		if (myController.chbox_legs_CT.isSelected()) {
 			for (String name : listOfExercises) {
 				String[] words = name.split(",");
-				if (words[0].equals("LEGS")) {
+				if (words[0].equals("1")) {
 					exerciseLegs.add(name);
 				}
 			}
@@ -292,7 +324,7 @@ public class Training extends Main {
 		if (myController.chbox_back_CT.isSelected()) {
 			for (String name : listOfExercises) {
 				String[] words = name.split(",");
-				if (words[0].equals("BACK")) {
+				if (words[0].equals("2")) {
 					exerciseBack.add(name);
 				}
 			}
@@ -300,7 +332,7 @@ public class Training extends Main {
 		if (myController.chbox_chest_CT.isSelected()) {
 			for (String name : listOfExercises) {
 				String[] words = name.split(",");
-				if (words[0].equals("CHEST")) {
+				if (words[0].equals("3")) {
 					exerciseChest.add(name);
 				}
 			}
@@ -308,7 +340,7 @@ public class Training extends Main {
 		if (myController.chbox_shoulders_CT.isSelected()) {
 			for (String name : listOfExercises) {
 				String[] words = name.split(",");
-				if (words[0].equals("SHOULDERS")) {
+				if (words[0].equals("4")) {
 					exerciseShoulders.add(name);
 				}
 			}
@@ -316,16 +348,8 @@ public class Training extends Main {
 		if (myController.chbox_arms_CT.isSelected()) {
 			for (String name : listOfExercises) {
 				String[] words = name.split(",");
-				if (words[0].equals("ARMS")) {
+				if (words[0].equals("5")) {
 					exerciseArms.add(name);
-				}
-			}
-		}
-		if (myController.chbox_abs_CT.isSelected()) {
-			for (String name : listOfExercises) {
-				String[] words = name.split(",");
-				if (words[0].equals("ABS")) {
-					exerciseABS.add(name);
 				}
 			}
 		}
