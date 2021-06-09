@@ -1,31 +1,27 @@
 package application;
 
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 
 import org.sqlite.SQLiteDataSource;
 
-import javafx.application.Application;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
@@ -45,10 +41,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-import javafx.stage.Stage;
 import javafx.scene.control.CheckBox;
 
 public class Controller {
@@ -57,13 +51,12 @@ public class Controller {
 	public AnchorPane Settings_App;
 	public AnchorPane Training_App;
 	public AnchorPane Main_App;
+	public AnchorPane OwnTrain_App;
 	public ImageView Main_Image;
 	public ImageView img;
-	public Button Side_Menu_btn;
-//	public AnchorPane Side_Menu_App;
 
 	// settings app
-	public ComboBox plec, comboCw2, comboCw1;
+	public ComboBox<String> plec, comboCw1;
 	public TextField imie, nazwisko, waga, wzrost;
 	public DatePicker data;
 	public Label label1;
@@ -71,7 +64,7 @@ public class Controller {
 	public RadioButton ostatnitrening, radioGraf;
 	public ScrollPane scrollPane;
 	public ToggleGroup radioBtns;
-	public CheckBox checkBMI, checkCW1, checkCW2;
+	public CheckBox checkBMI, checkCW1;
 	public ImageView i1, i2, i3, i4, i5, i6;
 
 	// main app
@@ -82,11 +75,11 @@ public class Controller {
 
 	// Side
 	public TableView<finishedTrainings> table;
-	public TableColumn<finishedTrainings, String> idCol;
 	public TableColumn<finishedTrainings, String> dateCol;
 	public TableColumn<finishedTrainings, String> nameCol;
 	ObservableList<finishedTrainings> obslist = FXCollections.observableArrayList();
 	ObservableList<String> obslist3 = FXCollections.observableArrayList();
+	ObservableList<String> obslist2 = FXCollections.observableArrayList();
 
 	// training app
 	public Button btn_CT;
@@ -111,6 +104,17 @@ public class Controller {
 	public static String trainingToDB;
 	public Button btn_hideTraining;
 	public TextArea Show_Training_Table;
+
+	//create own training
+	public Button Train_Add;
+	public Button Train_Del;
+	public Button Train_Save;
+	public ComboBox<String> Train_ex;
+	public ComboBox<String> Train_time;
+	public ComboBox<String> Train_series;
+	public ListView<String> Train_list;
+	String training;
+	ArrayList<String> Train_AList = new ArrayList<String>();
 	
 	String radioGrp, imageId;
 	Image image;
@@ -127,7 +131,7 @@ public class Controller {
 
 		Profil p1 = new Profil(imie.getText(), nazwisko.getText(), waga.getText(), wzrost.getText(), data.getValue(),
 				plec.getValue().toString(), imageId, radioGrp, checkBMI.isSelected(), comboCw1.getValue().toString(),
-				comboCw2.getValue().toString(), checkCW1.isSelected(), checkCW2.isSelected());
+				checkCW1.isSelected());
 
 		try {
 			FileOutputStream f = new FileOutputStream(new File("Profil.txt"));
@@ -151,9 +155,7 @@ public class Controller {
 			ostatnitrening.setDisable(true);
 			checkBMI.setDisable(true);
 			comboCw1.setDisable(true);
-			comboCw2.setDisable(true);
 			checkCW1.setDisable(true);
-			checkCW2.setDisable(true);
 
 			Edit_Click.setVisible(true);
 			Save_Click.setVisible(false);
@@ -195,13 +197,27 @@ public class Controller {
 	}
 
 	public void loadOnStart() {
-		loadProfil();
 		loadDB();
-		LoadTableView();
+		loadProfil();
 		loadMain();
+		LoadTableView();
+		try {
+			Connection con = ds.getConnection();
+			ResultSet rs = con.createStatement().executeQuery("Select exercises from Exercises");
+			while (rs.next()) {
+				obslist2.add(rs.getString("exercises"));
+			}
+		} catch (SQLException e) {
+			System.out.print("B³¹d" + e);
+		} catch (Exception e) {
+
+		}
+
 		plec.getItems().addAll("Mê¿czyzna", "Kobieta");
-		comboCw1.getItems().addAll("Plank", "V-ups", "Hollow Hold");
-		comboCw2.getItems().addAll("Plank", "V-ups", "Hollow Hold");
+		comboCw1.getItems().addAll(obslist2);
+		Train_ex.getItems().addAll(obslist2);
+		Train_series.getItems().addAll("3x3", "5x5");
+		Train_time.getItems().addAll("1:00","1:30","2:00","2:30","3:00","3:30","4:00","4:30","5:00");
 
 		label1.setDisable(true);
 		imie.setDisable(true);
@@ -215,9 +231,7 @@ public class Controller {
 		ostatnitrening.setDisable(true);
 		checkBMI.setDisable(true);
 		comboCw1.setDisable(true);
-		comboCw2.setDisable(true);
 		checkCW1.setDisable(true);
-		checkCW2.setDisable(true);
 
 		Save_Click.setVisible(false);
 		ToggleGroup radioTrainGroup = new ToggleGroup();
@@ -255,17 +269,7 @@ public class Controller {
 			Main_BMI.setVisible(true);
 			lblBMI.setVisible(true);
 		}
-		if (checkCW1.isSelected()) {
-//			Main_OstatniTrening
-//					.appendText(dane[9] + "\nOstatni trening" + "" + "\nMax" + "" + "\nIloœæ powtórzeñ" + "");
-		}
-		if (checkCW1.isSelected() && checkCW1.isSelected()) {
-//			Main_OstatniTrening.appendText("\n\n");
-		}
-		if (checkCW2.isSelected()) {
-//			Main_OstatniTrening
-//					.appendText(dane[10] + "\nOstatni trening" + "" + "\nMax" + "" + "\nIloœæ powtórzeñ" + "");
-		}
+
 		Double BMI = (Double.parseDouble(dane[3]) / Double.parseDouble(dane[2]) * 10);
 		Double a = BMI;
 		a *= 100; // pi = pi * 100;
@@ -280,28 +284,45 @@ public class Controller {
 			ObjectInputStream oi = new ObjectInputStream(fi);
 			Profil pr1 = (Profil) oi.readObject();
 
-			dane = pr1.toString().split("\n");
+			if (!pr1.equals(null)) {
+				dane = pr1.toString().split("\n");
 
-			imie.setText(dane[0]);
-			nazwisko.setText(dane[1]);
-			waga.setText(dane[2]);
-			wzrost.setText(dane[3]);
-			data.setValue(LocalDate.parse(dane[4]));
-			plec.setValue(dane[5]);
-			SetImage(dane[6]);
+				imie.setText(dane[0]);
+				nazwisko.setText(dane[1]);
+				waga.setText(dane[2]);
+				wzrost.setText(dane[3]);
+				data.setValue(LocalDate.parse(dane[4]));
+				plec.setValue(dane[5]);
+				SetImage(dane[6]);
 
-			if (dane[7].equals("Graf")) {
-				radioGraf.setSelected(true);
+				if (dane[7].equals("Graf")) {
+					radioGraf.setSelected(true);
+				} else {
+					ostatnitrening.setSelected(true);
+				}
+
+				checkBMI.setSelected(Boolean.parseBoolean(dane[8]));
+				comboCw1.setValue(dane[9]);
+				checkCW1.setSelected(Boolean.parseBoolean(dane[10]));
 			} else {
-				ostatnitrening.setSelected(true);
+				imie.setText("");
+				nazwisko.setText("");
+				waga.setText("");
+				wzrost.setText("");
+//			data.setValue("");
+				plec.setValue("");
+				SetImage("");
+
+				if ("Graf".equals("Graf")) {
+					radioGraf.setSelected(true);
+				} else {
+					ostatnitrening.setSelected(true);
+				}
+
+				checkBMI.setSelected(Boolean.parseBoolean(""));
+				comboCw1.setValue("");
+				checkCW1.setSelected(Boolean.parseBoolean(""));
 			}
-
-			checkBMI.setSelected(Boolean.parseBoolean(dane[8]));
-			comboCw1.setValue(dane[9]);
-			comboCw2.setValue(dane[10]);
-			checkCW1.setSelected(Boolean.parseBoolean(dane[11]));
-			checkCW2.setSelected(Boolean.parseBoolean(dane[12]));
-
 			oi.close();
 			fi.close();
 		} catch (FileNotFoundException e) {
@@ -326,9 +347,7 @@ public class Controller {
 		ostatnitrening.setDisable(false);
 		checkBMI.setDisable(false);
 		comboCw1.setDisable(false);
-		comboCw2.setDisable(false);
 		checkCW1.setDisable(false);
-		checkCW2.setDisable(false);
 
 		Edit_Click.setVisible(false);
 		Save_Click.setVisible(true);
@@ -365,20 +384,10 @@ public class Controller {
 	}
 
 	public void ChooseImageExit(MouseEvent event) {
-
 		scrollPane.setVisible(false);
-
 		String s = event.getTarget().toString();
 		imageId = s.substring(13, 15);
 		SetImage(imageId);
-	}
-
-	public void MainClick(ActionEvent event) {
-		Main_App.setVisible(true);
-		Settings_App.setVisible(false);
-		Training_App.setVisible(false);
-		scrollPane.setVisible(false);
-		loadMain();
 	}
 
 	public void Create_Training(ActionEvent event) {
@@ -412,22 +421,6 @@ public class Controller {
 			alert.setContentText("Przepraszamy. Coœ posz³o nie tak:\n\n" + e + "\n\nSpróbuj jeszcze raz.");
 			alert.showAndWait();
 		}
-	}
-
-	public void ProfilClick(ActionEvent event) {
-//		Side_Menu_App.setVisible(false);
-		Settings_App.setVisible(true);
-		Main_App.setVisible(false);
-		Training_App.setVisible(false);
-		scrollPane.setVisible(false);
-	}
-
-	public void TrainingClick(ActionEvent event) {
-		Settings_App.setVisible(false);
-		Main_App.setVisible(false);
-		Training_App.setVisible(true);
-		scrollPane.setVisible(false);
-//		Side_Menu_App.setVisible(false);
 	}
 
 	public void Help_CT(ActionEvent event) {
@@ -522,6 +515,81 @@ public class Controller {
 		Show_Training_Table.setVisible(false);
 		btn_hideTraining.setVisible(false);
 	}
+		
+	public void AddExercise(ActionEvent event) {
+		if(!(Train_ex.getValue() == null) && !(Train_series.getValue() == null)&& !(Train_time.getValue() == null)) {
+		Train_list.getItems().clear();
+		Train_AList.add(Train_ex.getValue()+", "+ Train_series.getValue() +", "+ Train_time.getValue());
+		Train_list.getItems().addAll(Train_AList);
+		}
+		else {
+			Alert alert = new Alert(AlertType.WARNING);
+			alert.setTitle("");
+			alert.setHeaderText(null);
+			alert.setContentText("Nie wype³niono wszystkich danych");
+			alert.showAndWait();
+		}
+	}
 	
+	public void DelExercise(ActionEvent event) {
+		int a = Train_list.getSelectionModel().getSelectedIndex();
+		if(a>=0) {
+		Train_AList.remove(a);
+		Train_list.getItems().remove(a);
+		}
+	}
 	
+	public void SaveExercise(ActionEvent event) {
+		try {
+			
+			for(int i=0;i<Train_AList.size();i++) {
+				if(i==0) {
+					training = Train_AList.get(0);
+				}else
+				training = training +"; "+ Train_AList.get(i);
+			}
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+			LocalDateTime now = LocalDateTime.now();
+			Connection con = ds.getConnection();
+			PreparedStatement ps = con.prepareStatement("INSERT INTO Trainings(ID_training,Date,Name) VALUES(?,?,?)");
+			ps.setString(2, dtf.format(now));
+			ps.setString(3, training);
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			System.out.print("B³¹d" + e);
+		}
+	}
+	//Zmiana okna
+	public void MainClick(ActionEvent event) {
+		Main_App.setVisible(true);
+		Settings_App.setVisible(false);
+		Training_App.setVisible(false);
+		scrollPane.setVisible(false);
+		OwnTrain_App.setVisible(false);
+		loadMain();
+	}
+	
+	public void OwnTrainClick(ActionEvent event) {
+		Main_App.setVisible(false);
+		Settings_App.setVisible(false);
+		Training_App.setVisible(false);
+		scrollPane.setVisible(false);
+		OwnTrain_App.setVisible(true);
+	}
+	
+	public void ProfilClick(ActionEvent event) {
+		Settings_App.setVisible(true);
+		Main_App.setVisible(false);
+		Training_App.setVisible(false);
+		scrollPane.setVisible(false);
+		OwnTrain_App.setVisible(false);
+	}
+	
+	public void TrainingClick(ActionEvent event) {
+		Settings_App.setVisible(false);
+		Main_App.setVisible(false);
+		Training_App.setVisible(true);
+		scrollPane.setVisible(false);
+		OwnTrain_App.setVisible(false);
+	}
 }
