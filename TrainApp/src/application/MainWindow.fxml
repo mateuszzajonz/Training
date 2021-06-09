@@ -87,7 +87,18 @@
                   <Font size="20.0" />
                </font>
             </Label>
+            <Button layoutX="174.0" layoutY="368.0" mnemonicParsing="false" onAction="#Show_TrainingAll" text="Show" />
             <Button fx:id="Main_DeleteAll" layoutX="254.0" layoutY="368.0" mnemonicParsing="false" onAction="#Delete_TrainingAll" text="Usun wszystko" />
+            <TextArea fx:id="Show_Training_Table" prefHeight="623.0" prefWidth="400.0" visible="false" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <padding>
+                  <Insets bottom="60.0" left="30.0" right="30.0" top="30.0" />
+               </padding>
+            </TextArea>
+            <Button fx:id="btn_hideTraining" alignment="CENTER" layoutX="154.0" layoutY="576.0" mnemonicParsing="false" onAction="#Hide_Training" text="Hide Training" textAlignment="CENTER" visible="false" AnchorPane.bottomAnchor="94.0" AnchorPane.leftAnchor="154.0" AnchorPane.rightAnchor="138.0">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font>
+            </Button>
          </children>
       </AnchorPane>
       <AnchorPane fx:id="Training_App" prefHeight="700.0" prefWidth="400.0" visible="false">

@@ -78,30 +78,15 @@ public class Controller {
 	public Label Main_Imie, Main_Nazwisko, Main_Waga, Main_Wzrost, Main_BMI, lblBMI;
 	public LineChart<String, String> Main_Graf;
 	public TextArea Main_OstatniTrening;
-	public Button Main_DeleteOne,Main_DeleteAll;
+	public Button Main_DeleteOne, Main_DeleteAll;
 
 	// Side
-//	public TableView<Trainings> table;
-//	public ObservableList<Trainings> obslist = FXCollections.observableArrayList();
-//	public TableColumn<Trainings,String> idColumn = new TableColumn<>("ID");
-//	public TableColumn<Trainings,String> dateColumn = new TableColumn<>("Data");
-//	public TableColumn<Trainings,String> nameColumn = new TableColumn<>("Nazwa");
-
 	public TableView<finishedTrainings> table;
 	public TableColumn<finishedTrainings, String> idCol;
 	public TableColumn<finishedTrainings, String> dateCol;
 	public TableColumn<finishedTrainings, String> nameCol;
 	ObservableList<finishedTrainings> obslist = FXCollections.observableArrayList();
-
-//	ObservableList<finishedTrainings> getfinishedTrainingsList(){
-//		ObservableList<finishedTrainings> obslist = FXCollections.observableArrayList();
-//		obslist.add(new finishedTrainings("1","11.07.1999","LEGS"));
-//		obslist.add(new finishedTrainings("2","19.08.1999","LEGS"));
-//		obslist.add(new finishedTrainings("3","19.07.1999","ABS"));
-//		obslist.add(new finishedTrainings("4","19.01.1999","LEGS"));
-//		obslist.add(new finishedTrainings("5","19.07.1999","LEGS"));
-//		return obslist;
-//	}
+	ObservableList<String> obslist3 = FXCollections.observableArrayList();
 
 	// training app
 	public Button btn_CT;
@@ -122,9 +107,11 @@ public class Controller {
 	public Button accept_acceptGrid_CT;
 	public Button reroll_acceptGrid_CT;
 	public TextArea txtArea_acceptGrid_CT;
-	Training trainCreate = new Training();
-	static String trainingToDB;
-
+	public Training trainCreate = new Training();
+	public static String trainingToDB;
+	public Button btn_hideTraining;
+	public TextArea Show_Training_Table;
+	
 	String radioGrp, imageId;
 	Image image;
 	String[] dane;
@@ -177,6 +164,7 @@ public class Controller {
 			System.out.println("Error initializing stream");
 		}
 	}
+
 	public void LoadTableView() {
 		table.getItems().clear();
 		try {
@@ -195,6 +183,7 @@ public class Controller {
 
 		table.setItems(obslist);
 	}
+
 	public void loadDB() {
 		try {
 			ds = new SQLiteDataSource();
@@ -252,7 +241,7 @@ public class Controller {
 			table.setVisible(false);
 			Main_DeleteAll.setVisible(false);
 			Main_DeleteOne.setVisible(false);
-			
+
 		} else {
 			table.setVisible(true);
 			Main_Graf.setVisible(false);
@@ -425,16 +414,6 @@ public class Controller {
 		}
 	}
 
-//	public void Open_Side_Menu(ActionEvent event) {
-//		Side_Menu_App.setVisible(true);
-//		Settings_App.setVisible(false);
-//		Main_App.setVisible(false);
-//		Training_App.setVisible(false);
-//		scrollPane.setVisible(false);
-//		LoadTableView();
-//	}
-	
-
 	public void ProfilClick(ActionEvent event) {
 //		Side_Menu_App.setVisible(false);
 		Settings_App.setVisible(true);
@@ -487,31 +466,62 @@ public class Controller {
 			PreparedStatement ps = con.prepareStatement("INSERT INTO Trainings(ID_training,Date,Name) VALUES(?,?,?)");
 			ps.setString(2, dtf.format(now));
 			ps.setString(3, trainingToDB);
-			ps.executeUpdate();	
+			ps.executeUpdate();
 		} catch (SQLException e) {
 			System.out.print("B³¹d" + e);
 		}
 	}
+
 	public void Delete_Training() {
 		try {
 			Connection con = ds.getConnection();
 			PreparedStatement ps = con.prepareStatement("DELETE FROM Trainings WHERE ID_training = ?;");
 			finishedTrainings train = table.getSelectionModel().getSelectedItem();
-			ps.setString(1, train.getId() );
-			ps.executeUpdate();	
+			ps.setString(1, train.getId());
+			ps.executeUpdate();
 		} catch (SQLException e) {
 			System.out.print("B³¹d" + e);
 		}
 		LoadTableView();
 	}
+
 	public void Delete_TrainingAll() {
 		try {
 			Connection con = ds.getConnection();
 			PreparedStatement ps = con.prepareStatement("DELETE FROM Trainings;");
-			ps.executeUpdate();	
+			ps.executeUpdate();
 		} catch (SQLException e) {
 			System.out.print("B³¹d" + e);
 		}
 		LoadTableView();
 	}
+
+	public void Show_TrainingAll(ActionEvent event) {
+		String done = "";
+		try {
+			done = table.getSelectionModel().getSelectedItem().name;
+		} catch (Exception e) {
+			System.out.print("B³¹d" + e);
+		}
+		String[] words = done.split(";");
+		if (!done.equals("")) {
+			Show_Training_Table.setVisible(true);
+			btn_hideTraining.setVisible(true);
+			Show_Training_Table.setText("Twój trening z dnia \""+table.getSelectionModel().getSelectedItem().date+"\" to:\n\n");
+			for (int i = 0; i < words.length; i++) {
+				String[] wordsInside = words[i].split("\\,");
+				Show_Training_Table.appendText("Æwiczenie nr."+(i+1)+":\t\t\t"+wordsInside[0]+"\n");
+				Show_Training_Table.appendText("Serie x powtórzenia:\t"+wordsInside[1]+"\n");
+				Show_Training_Table.appendText("Ciê¿ar:\t\t\t\t"+wordsInside[2]+"\n");
+				Show_Training_Table.appendText("Czas na przerwê:\t\t"+wordsInside[3]+"\n\n");
+			}
+		}
+	}
+
+	public void Hide_Training(ActionEvent event) {
+		Show_Training_Table.setVisible(false);
+		btn_hideTraining.setVisible(false);
+	}
+	
+	
 }
