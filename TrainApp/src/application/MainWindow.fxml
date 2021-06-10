@@ -88,7 +88,7 @@
                   <Font size="20.0" />
                </font>
             </Label>
-            <Button layoutX="174.0" layoutY="368.0" mnemonicParsing="false" onAction="#Show_TrainingAll" text="Show" />
+            <Button fx:id="Main_Show" layoutX="174.0" layoutY="368.0" mnemonicParsing="false" onAction="#Show_TrainingAll" text="Show" />
             <Button fx:id="Main_DeleteAll" layoutX="254.0" layoutY="368.0" mnemonicParsing="false" onAction="#Delete_TrainingAll" text="Usun wszystko" />
             <TextArea fx:id="Show_Training_Table" prefHeight="623.0" prefWidth="400.0" visible="false" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <padding>
@@ -376,7 +376,6 @@
             </RadioButton>
             <RadioButton fx:id="ostatnitrening" layoutX="113.0" layoutY="419.0" mnemonicParsing="false" selected="true" text="Ostatni trening" toggleGroup="$radioBtns" />
             <ComboBox fx:id="comboCw1" layoutX="67.0" layoutY="450.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="40.0" prefWidth="300.0" promptText="Ulubione ćwiczenie" />
-            <CheckBox fx:id="checkCW1" graphicTextGap="12.0" layoutX="41.0" layoutY="461.0" maxHeight="12.0" maxWidth="123.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="7.0" />
          </children>
       </AnchorPane>
       <ScrollPane fx:id="scrollPane" layoutX="222.0" prefHeight="631.0" prefWidth="174.0" visible="false">

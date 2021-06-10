@@ -29,7 +29,10 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -64,14 +67,18 @@ public class Controller {
 	public RadioButton ostatnitrening, radioGraf;
 	public ScrollPane scrollPane;
 	public ToggleGroup radioBtns;
-	public CheckBox checkBMI, checkCW1;
+	public CheckBox checkBMI;
 	public ImageView i1, i2, i3, i4, i5, i6;
 
 	// main app
 	public Label Main_Imie, Main_Nazwisko, Main_Waga, Main_Wzrost, Main_BMI, lblBMI;
-	public LineChart<String, String> Main_Graf;
+//	public LineChart<String, String> Main_Graf;
+	CategoryAxis xAxis = new CategoryAxis();      
+	NumberAxis yAxis = new NumberAxis(); 
+	public LineChart<String, Number> Main_Graf = new LineChart<String, Number>(xAxis, yAxis);
 	public TextArea Main_OstatniTrening;
 	public Button Main_DeleteOne, Main_DeleteAll;
+	public Button Main_Show;
 
 	// Side
 	public TableView<finishedTrainings> table;
@@ -142,7 +149,7 @@ public class Controller {
 
 		Profil p1 = new Profil(imie.getText(), nazwisko.getText(), waga.getText(), wzrost.getText(), data.getValue(),
 				plec.getValue().toString(), imageId, radioGrp, checkBMI.isSelected(), comboCw1.getValue().toString(),
-				checkCW1.isSelected());
+				true);
 
 		try {
 			FileOutputStream f = new FileOutputStream(new File("Profil.txt"));
@@ -166,7 +173,6 @@ public class Controller {
 			ostatnitrening.setDisable(true);
 			checkBMI.setDisable(true);
 			comboCw1.setDisable(true);
-			checkCW1.setDisable(true);
 
 			Edit_Click.setVisible(true);
 			Save_Click.setVisible(false);
@@ -246,7 +252,6 @@ public class Controller {
 		ostatnitrening.setDisable(true);
 		checkBMI.setDisable(true);
 		comboCw1.setDisable(true);
-		checkCW1.setDisable(true);
 
 		Save_Click.setVisible(false);
 		ToggleGroup radioTrainGroup = new ToggleGroup();
@@ -258,8 +263,7 @@ public class Controller {
 		train.AddExerciseFromDatabase();
 	}
 
-	public void Maxes_Table()
-	{
+	public void Maxes_Table() {
 		table_Maxes.getItems().clear();
 		try {
 			Connection con = ds.getConnection();
@@ -274,10 +278,10 @@ public class Controller {
 
 		exerciseCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getExercises()));
 		maxCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getMax()));
-		
+
 		table_Maxes.setItems(obslist1);
 	}
-	
+
 	private void loadMain() {
 		Main_Image.setImage(image);
 		Main_Imie.setText(dane[0]);
@@ -286,13 +290,16 @@ public class Controller {
 		Main_Wzrost.setText(dane[3] + " cm");
 		LoadTableView();
 		if (radioGraf.isSelected()) {
+			LineChart();
 			Main_Graf.setVisible(true);
 			table.setVisible(false);
+			Main_Show.setVisible(false);
 			Main_DeleteAll.setVisible(false);
 			Main_DeleteOne.setVisible(false);
 
 		} else {
 			table.setVisible(true);
+			Main_Show.setVisible(true);
 			Main_Graf.setVisible(false);
 			Main_DeleteAll.setVisible(true);
 			Main_DeleteOne.setVisible(true);
@@ -338,7 +345,6 @@ public class Controller {
 
 				checkBMI.setSelected(Boolean.parseBoolean(dane[8]));
 				comboCw1.setValue(dane[9]);
-				checkCW1.setSelected(Boolean.parseBoolean(dane[10]));
 			} else {
 				imie.setText("");
 				nazwisko.setText("");
@@ -356,7 +362,6 @@ public class Controller {
 
 				checkBMI.setSelected(Boolean.parseBoolean(""));
 				comboCw1.setValue("");
-				checkCW1.setSelected(Boolean.parseBoolean(""));
 			}
 			oi.close();
 			fi.close();
@@ -382,7 +387,6 @@ public class Controller {
 		ostatnitrening.setDisable(false);
 		checkBMI.setDisable(false);
 		comboCw1.setDisable(false);
-		checkCW1.setDisable(false);
 
 		Edit_Click.setVisible(false);
 		Save_Click.setVisible(true);
@@ -549,8 +553,28 @@ public class Controller {
 		} catch (Exception e) {
 			System.out.print("B³¹d" + e);
 		}
-
 	}
+
+	public void LineChart() {
+		Main_Graf.getData().clear();
+		String done = "";
+		XYChart.Series<String,Number> series = new XYChart.Series<String,Number>();
+		series.setName(comboCw1.getValue());
+		for (int i = 0; i < obslist.size(); i++) {
+			done = table.getItems().get(i).name;
+			String[] words = done.split(";");
+			String[] wordsInside2;
+			for (int j = 0; j < words.length; j++) {
+				wordsInside2 = words[j].split("\\,");
+				if(wordsInside2[0].equals(comboCw1.getValue())) {
+					series.getData().add(new XYChart.Data<String, Number>(table.getItems().get(i).date,Integer.parseInt(wordsInside2[2])));
+					break;
+				}
+			}
+		}
+		Main_Graf.getData().add(series);
+	}
+
 
 	public void Hide_Training(ActionEvent event) {
 		Show_Training_Table.setVisible(false);
@@ -561,8 +585,8 @@ public class Controller {
 		if (!(Train_ex.getValue() == null) && !(Train_series.getValue() == null) && !(Train_series1.getValue() == null)
 				&& !(Train_Weight.equals(null)) && !(Train_time.getValue() == null)) {
 			Train_list.getItems().clear();
-			Train_AList.add(Train_ex.getValue() + ", " + Train_series.getValue() + "x" + Train_series1.getValue() + ", "
-					+ Train_Weight.getText() + ", " + Train_time.getValue());
+			Train_AList.add(Train_ex.getValue() + "," + Train_series.getValue() + "x" + Train_series1.getValue() + ","
+					+ Train_Weight.getText() + "," + Train_time.getValue());
 			Train_list.getItems().addAll(Train_AList);
 		} else {
 			Alert alert = new Alert(AlertType.WARNING);
@@ -609,7 +633,7 @@ public class Controller {
 		scrollPane.setVisible(false);
 		OwnTrain_App.setVisible(false);
 		loadMain();
-	}
+		}
 
 	public void OwnTrainClick(ActionEvent event) {
 		Main_App.setVisible(false);
@@ -634,12 +658,12 @@ public class Controller {
 		scrollPane.setVisible(false);
 		OwnTrain_App.setVisible(false);
 	}
-	
+
 	public void Change_Max(ActionEvent event) {
 		try {
 			double max = Double.parseDouble(fix_Max.getText());
 			Connection con = ds.getConnection();
-			PreparedStatement ps = con.prepareStatement("UPDATE Exercises SET max = " +max+ " WHERE id = ?;");
+			PreparedStatement ps = con.prepareStatement("UPDATE Exercises SET max = " + max + " WHERE id = ?;");
 			ExercisesDB train = table_Maxes.getSelectionModel().getSelectedItem();
 			ps.setString(1, train.getId());
 			ps.executeUpdate();
@@ -651,11 +675,11 @@ public class Controller {
 
 	public void Change_Maxes_OT(ActionEvent event) {
 		Anchor_Fix_OT.setVisible(true);
-		Anchor_Create_OT.setVisible(false);	
+		Anchor_Create_OT.setVisible(false);
 	}
 
 	public void Create_Training_OT(ActionEvent event) {
 		Anchor_Fix_OT.setVisible(false);
-		Anchor_Create_OT.setVisible(true);	
+		Anchor_Create_OT.setVisible(true);
 	}
 }
