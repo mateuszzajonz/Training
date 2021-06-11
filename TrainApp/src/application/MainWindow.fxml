@@ -102,7 +102,7 @@
             </Button>
          </children>
       </AnchorPane>
-      <AnchorPane fx:id="OwnTrain_App" prefHeight="700.0" prefWidth="400.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <AnchorPane fx:id="OwnTrain_App" prefHeight="700.0" prefWidth="400.0" visible="false" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <AnchorPane fx:id="Anchor_Fix_OT" prefHeight="700.0" prefWidth="400.0" visible="false" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
@@ -348,7 +348,7 @@
             </GridPane>
          </children>
       </AnchorPane>
-      <AnchorPane fx:id="Settings_App" prefHeight="700.0" prefWidth="400.0" visible="false">
+      <AnchorPane fx:id="Settings_App" prefHeight="700.0" prefWidth="400.0">
          <children>
             <HBox alignment="TOP_CENTER" layoutX="100.0" layoutY="61.0" prefHeight="100.0" prefWidth="200.0">
                <children>
@@ -375,7 +375,7 @@
                </toggleGroup>
             </RadioButton>
             <RadioButton fx:id="ostatnitrening" layoutX="113.0" layoutY="419.0" mnemonicParsing="false" selected="true" text="Ostatni trening" toggleGroup="$radioBtns" />
-            <ComboBox fx:id="comboCw1" layoutX="67.0" layoutY="450.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="40.0" prefWidth="300.0" promptText="Ulubione ćwiczenie" />
+            <ComboBox fx:id="comboCw1" layoutX="47.0" layoutY="450.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="40.0" prefWidth="320.0" promptText="Ulubione ćwiczenie" />
          </children>
       </AnchorPane>
       <ScrollPane fx:id="scrollPane" layoutX="222.0" prefHeight="631.0" prefWidth="174.0" visible="false">

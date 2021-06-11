@@ -69,12 +69,14 @@ public class Controller {
 	public ToggleGroup radioBtns;
 	public CheckBox checkBMI;
 	public ImageView i1, i2, i3, i4, i5, i6;
+	public Boolean blad = false;
+	public String raportBledu = "Proszê sprawdziæ poprawnoœæ danych w polach:\n";
 
 	// main app
 	public Label Main_Imie, Main_Nazwisko, Main_Waga, Main_Wzrost, Main_BMI, lblBMI;
 //	public LineChart<String, String> Main_Graf;
-	CategoryAxis xAxis = new CategoryAxis();      
-	NumberAxis yAxis = new NumberAxis(); 
+	CategoryAxis xAxis = new CategoryAxis();
+	NumberAxis yAxis = new NumberAxis();
 	public LineChart<String, Number> Main_Graf = new LineChart<String, Number>(xAxis, yAxis);
 	public TextArea Main_OstatniTrening;
 	public Button Main_DeleteOne, Main_DeleteAll;
@@ -140,48 +142,92 @@ public class Controller {
 	SQLiteDataSource ds = null;
 
 	public void SaveClick(ActionEvent event) {
-
+		blad = false;
+		raportBledu = "Proszê sprawdziæ poprawnoœæ danych w polach:\n";
 		if (radioGraf.isSelected()) {
 			radioGrp = "Graf";
 		} else {
 			radioGrp = "ostatnitrening";
 		}
+		if (checkValues()) {
+			Alert alert = new Alert(AlertType.WARNING);
+			alert.setTitle("");
+			alert.setHeaderText(null);
+			alert.setContentText(raportBledu);
+			alert.showAndWait();
+		} else {
+			Profil p1 = new Profil(imie.getText(), nazwisko.getText(), waga.getText(), wzrost.getText(),
+					data.getValue(), plec.getValue().toString(), imageId, radioGrp, checkBMI.isSelected(),
+					comboCw1.getValue().toString(), true);
 
-		Profil p1 = new Profil(imie.getText(), nazwisko.getText(), waga.getText(), wzrost.getText(), data.getValue(),
-				plec.getValue().toString(), imageId, radioGrp, checkBMI.isSelected(), comboCw1.getValue().toString(),
-				true);
+			try {
+				FileOutputStream f = new FileOutputStream(new File("Profil.txt"));
+				ObjectOutputStream o = new ObjectOutputStream(f);
 
-		try {
-			FileOutputStream f = new FileOutputStream(new File("Profil.txt"));
-			ObjectOutputStream o = new ObjectOutputStream(f);
+				// Write objects to file
+				o.writeObject(p1);
 
-			// Write objects to file
-			o.writeObject(p1);
+				o.close();
+				f.close();
 
-			o.close();
-			f.close();
+				label1.setDisable(true);
+				imie.setDisable(true);
+				nazwisko.setDisable(true);
+				wzrost.setDisable(true);
+				waga.setDisable(true);
+				data.setDisable(true);
+				plec.setDisable(true);
+				img.setDisable(true);
+				radioGraf.setDisable(true);
+				ostatnitrening.setDisable(true);
+				checkBMI.setDisable(true);
+				comboCw1.setDisable(true);
 
-			label1.setDisable(true);
-			imie.setDisable(true);
-			nazwisko.setDisable(true);
-			wzrost.setDisable(true);
-			waga.setDisable(true);
-			data.setDisable(true);
-			plec.setDisable(true);
-			img.setDisable(true);
-			radioGraf.setDisable(true);
-			ostatnitrening.setDisable(true);
-			checkBMI.setDisable(true);
-			comboCw1.setDisable(true);
+				Edit_Click.setVisible(true);
+				Save_Click.setVisible(false);
 
-			Edit_Click.setVisible(true);
-			Save_Click.setVisible(false);
-
-		} catch (FileNotFoundException e) {
-			System.out.println("File not found");
-		} catch (IOException e) {
-			System.out.println("Error initializing stream");
+			} catch (FileNotFoundException e) {
+				System.out.println("File not found");
+			} catch (IOException e) {
+				System.out.println("Error initializing stream");
+			}
+			loadOnStart();
 		}
+	}
+
+	public boolean checkValues() {
+		Boolean valueBlad = false;
+		if (comboCw1.getValue().equals("") || imie.getText().equals("") || nazwisko.getText().equals("")
+				|| plec.getValue().equals("") || data.getValue().equals(null)) {
+			raportBledu += "Brak wszystkich danych \n";
+			valueBlad = true;
+		}
+		for (int i = 0; i < imie.getText().length(); i++) {
+			if (Character.isDigit(imie.getText().charAt(i))) {
+				raportBledu += "Imie \n";
+				valueBlad = true;
+				break;
+			}
+		}
+			for (int i = 0; i < nazwisko.getText().length(); i++) {
+				if (Character.isDigit(nazwisko.getText().charAt(i))) {
+					raportBledu += "Nazwisko \n";
+					valueBlad = true;
+					break;
+				}
+			}
+		try {
+			double d = Double.parseDouble(wzrost.getText());
+			double a = Double.parseDouble(waga.getText());
+		} catch (NumberFormatException nfe) {
+			raportBledu += "Waga, Wzrost \n";
+			valueBlad = true;
+		}
+		if(data.getValue().equals(null)) {
+			raportBledu += "Data urodzenia \n";
+			valueBlad = true;
+		}
+		return valueBlad;
 	}
 
 	public void LoadTableView() {
@@ -212,13 +258,9 @@ public class Controller {
 			System.exit(0);
 		}
 	}
-
+	
 	public void loadOnStart() {
 		loadDB();
-		loadProfil();
-		loadMain();
-		LoadTableView();
-		Maxes_Table();
 		try {
 			Connection con = ds.getConnection();
 			ResultSet rs = con.createStatement().executeQuery("Select exercises from Exercises");
@@ -230,37 +272,47 @@ public class Controller {
 		} catch (Exception e) {
 
 		}
-
+		plec.getItems().clear();
 		plec.getItems().addAll("Mê¿czyzna", "Kobieta");
+		comboCw1.getItems().clear();
 		comboCw1.getItems().addAll(obslist2);
+		Train_ex.getItems().clear();
 		Train_ex.getItems().addAll(obslist2);
+		Train_series.getItems().clear();
 		Train_series.getItems().addAll("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15",
 				"16", "17", "18", "19", "20");
+		Train_series1.getItems().clear();
 		Train_series1.getItems().addAll("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15",
 				"16", "17", "18", "19", "20");
+		Train_time.getItems().clear();
 		Train_time.getItems().addAll("0:30", "1:00", "1:30", "2:00", "2:30", "3:00", "3:30", "4:00", "4:30", "5:00");
+		loadProfil();
+		if (!blad) {
+			loadMain();
+			LoadTableView();
+			Maxes_Table();
+			label1.setDisable(true);
+			imie.setDisable(true);
+			nazwisko.setDisable(true);
+			wzrost.setDisable(true);
+			waga.setDisable(true);
+			data.setDisable(true);
+			plec.setDisable(true);
+			img.setDisable(true);
+			radioGraf.setDisable(true);
+			ostatnitrening.setDisable(true);
+			checkBMI.setDisable(true);
+			comboCw1.setDisable(true);
 
-		label1.setDisable(true);
-		imie.setDisable(true);
-		nazwisko.setDisable(true);
-		wzrost.setDisable(true);
-		waga.setDisable(true);
-		data.setDisable(true);
-		plec.setDisable(true);
-		img.setDisable(true);
-		radioGraf.setDisable(true);
-		ostatnitrening.setDisable(true);
-		checkBMI.setDisable(true);
-		comboCw1.setDisable(true);
-
-		Save_Click.setVisible(false);
-		ToggleGroup radioTrainGroup = new ToggleGroup();
-		radioBtn_strength_CT.setToggleGroup(radioTrainGroup);
-		radioBtn_endurance_CT.setToggleGroup(radioTrainGroup);
-		radioBtn_muscle_CT.setToggleGroup(radioTrainGroup);
-		radioBtn_strength_CT.setSelected(true);
-		Training train = new Training();
-		train.AddExerciseFromDatabase();
+			Save_Click.setVisible(false);
+			ToggleGroup radioTrainGroup = new ToggleGroup();
+			radioBtn_strength_CT.setToggleGroup(radioTrainGroup);
+			radioBtn_endurance_CT.setToggleGroup(radioTrainGroup);
+			radioBtn_muscle_CT.setToggleGroup(radioTrainGroup);
+			radioBtn_strength_CT.setSelected(true);
+			Training train = new Training();
+			train.AddExerciseFromDatabase();
+		}
 	}
 
 	public void Maxes_Table() {
@@ -325,10 +377,14 @@ public class Controller {
 			FileInputStream fi = new FileInputStream(new File("Profil.txt"));
 			ObjectInputStream oi = new ObjectInputStream(fi);
 			Profil pr1 = (Profil) oi.readObject();
-
+			dane = pr1.toString().split("\n");
+			for (int i = 0; i < dane.length; i++) {
+				if (dane[i].equals("")) {
+					blad = true;
+					break;
+				}
+			}
 			if (!pr1.equals(null)) {
-				dane = pr1.toString().split("\n");
-
 				imie.setText(dane[0]);
 				nazwisko.setText(dane[1]);
 				waga.setText(dane[2]);
@@ -345,32 +401,30 @@ public class Controller {
 
 				checkBMI.setSelected(Boolean.parseBoolean(dane[8]));
 				comboCw1.setValue(dane[9]);
-			} else {
-				imie.setText("");
-				nazwisko.setText("");
-				waga.setText("");
-				wzrost.setText("");
-//			data.setValue("");
-				plec.setValue("");
-				SetImage("");
-
-				if ("Graf".equals("Graf")) {
-					radioGraf.setSelected(true);
-				} else {
-					ostatnitrening.setSelected(true);
-				}
-
-				checkBMI.setSelected(Boolean.parseBoolean(""));
-				comboCw1.setValue("");
 			}
 			oi.close();
 			fi.close();
 		} catch (FileNotFoundException e) {
 			System.out.println("File not found");
 		} catch (IOException e) {
-			System.out.println("Error initializing stream");
+			blad = true;
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
+		}
+		if (blad) {
+			System.out.println("Error initializing stream");
+			Alert alert = new Alert(AlertType.WARNING);
+			alert.setTitle("");
+			alert.setHeaderText(null);
+			alert.setContentText("Brak danych");
+			alert.showAndWait();
+			Settings_App.setVisible(true);
+			Main_App.setVisible(false);
+			Training_App.setVisible(false);
+			scrollPane.setVisible(false);
+			OwnTrain_App.setVisible(false);
+			Save_Click.setVisible(true);
+			Edit_Click.setVisible(false);
 		}
 	}
 
@@ -558,7 +612,7 @@ public class Controller {
 	public void LineChart() {
 		Main_Graf.getData().clear();
 		String done = "";
-		XYChart.Series<String,Number> series = new XYChart.Series<String,Number>();
+		XYChart.Series<String, Number> series = new XYChart.Series<String, Number>();
 		series.setName(comboCw1.getValue());
 		for (int i = 0; i < obslist.size(); i++) {
 			done = table.getItems().get(i).name;
@@ -566,15 +620,15 @@ public class Controller {
 			String[] wordsInside2;
 			for (int j = 0; j < words.length; j++) {
 				wordsInside2 = words[j].split("\\,");
-				if(wordsInside2[0].equals(comboCw1.getValue())) {
-					series.getData().add(new XYChart.Data<String, Number>(table.getItems().get(i).date,Integer.parseInt(wordsInside2[2])));
+				if (wordsInside2[0].equals(comboCw1.getValue())) {
+					series.getData().add(new XYChart.Data<String, Number>(table.getItems().get(i).date,
+							Integer.parseInt(wordsInside2[2])));
 					break;
 				}
 			}
 		}
 		Main_Graf.getData().add(series);
 	}
-
 
 	public void Hide_Training(ActionEvent event) {
 		Show_Training_Table.setVisible(false);
@@ -633,7 +687,7 @@ public class Controller {
 		scrollPane.setVisible(false);
 		OwnTrain_App.setVisible(false);
 		loadMain();
-		}
+	}
 
 	public void OwnTrainClick(ActionEvent event) {
 		Main_App.setVisible(false);
