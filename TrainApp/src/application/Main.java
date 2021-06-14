@@ -20,7 +20,7 @@ public class Main extends Application {
 			Controller myController = loader.getController();
 			myConrollerToPass = myController;
 
-			Scene scene = new Scene(root, 400, 700);
+			Scene scene = new Scene(root);
 			primaryStage.setScene(scene);
 			primaryStage.show();
 			myController.loadOnStart();

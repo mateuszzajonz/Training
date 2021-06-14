@@ -29,7 +29,10 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -64,14 +67,19 @@ public class Controller {
 	public RadioButton ostatnitrening, radioGraf;
 	public ScrollPane scrollPane;
 	public ToggleGroup radioBtns;
-	public CheckBox checkBMI, checkCW1;
+	public CheckBox checkBMI;
 	public ImageView i1, i2, i3, i4, i5, i6;
+	public Boolean blad = false;
+	public String raportBledu = "Proszê sprawdziæ poprawnoœæ danych w polach:\n";
 
 	// main app
 	public Label Main_Imie, Main_Nazwisko, Main_Waga, Main_Wzrost, Main_BMI, lblBMI;
-	public LineChart<String, String> Main_Graf;
+	CategoryAxis xAxis = new CategoryAxis();
+	NumberAxis yAxis = new NumberAxis();
+	public LineChart<String, Number> Main_Graf = new LineChart<String, Number>(xAxis, yAxis);
 	public TextArea Main_OstatniTrening;
 	public Button Main_DeleteOne, Main_DeleteAll;
+	public Button Main_Show;
 
 	// Side
 	public TableView<finishedTrainings> table;
@@ -132,71 +140,8 @@ public class Controller {
 	String[] dane;
 	SQLiteDataSource ds = null;
 
-	public void SaveClick(ActionEvent event) {
-
-		if (radioGraf.isSelected()) {
-			radioGrp = "Graf";
-		} else {
-			radioGrp = "ostatnitrening";
-		}
-
-		Profil p1 = new Profil(imie.getText(), nazwisko.getText(), waga.getText(), wzrost.getText(), data.getValue(),
-				plec.getValue().toString(), imageId, radioGrp, checkBMI.isSelected(), comboCw1.getValue().toString(),
-				checkCW1.isSelected());
-
-		try {
-			FileOutputStream f = new FileOutputStream(new File("Profil.txt"));
-			ObjectOutputStream o = new ObjectOutputStream(f);
-
-			// Write objects to file
-			o.writeObject(p1);
-
-			o.close();
-			f.close();
-
-			label1.setDisable(true);
-			imie.setDisable(true);
-			nazwisko.setDisable(true);
-			wzrost.setDisable(true);
-			waga.setDisable(true);
-			data.setDisable(true);
-			plec.setDisable(true);
-			img.setDisable(true);
-			radioGraf.setDisable(true);
-			ostatnitrening.setDisable(true);
-			checkBMI.setDisable(true);
-			comboCw1.setDisable(true);
-			checkCW1.setDisable(true);
-
-			Edit_Click.setVisible(true);
-			Save_Click.setVisible(false);
-
-		} catch (FileNotFoundException e) {
-			System.out.println("File not found");
-		} catch (IOException e) {
-			System.out.println("Error initializing stream");
-		}
-	}
-
-	public void LoadTableView() {
-		table.getItems().clear();
-		try {
-			Connection con = ds.getConnection();
-			ResultSet rs = con.createStatement().executeQuery("Select * from Trainings");
-			while (rs.next()) {
-				obslist.add(
-						new finishedTrainings(rs.getString("ID_training"), rs.getString("Date"), rs.getString("Name")));
-			}
-		} catch (SQLException e) {
-			System.out.print("B³¹d");
-		}
-
-		dateCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDate()));
-		nameCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
-
-		table.setItems(obslist);
-	}
-
+	
+	//Data storage
 	public void loadDB() {
 		try {
 			ds = new SQLiteDataSource();
@@ -209,10 +154,6 @@ public class Controller {
 
 	public void loadOnStart() {
 		loadDB();
-		loadProfil();
-		loadMain();
-		LoadTableView();
-		Maxes_Table();
 		try {
 			Connection con = ds.getConnection();
 			ResultSet rs = con.createStatement().executeQuery("Select exercises from Exercises");
@@ -224,60 +165,49 @@ public class Controller {
 		} catch (Exception e) {
 
 		}
-
+		plec.getItems().clear();
 		plec.getItems().addAll("Mê¿czyzna", "Kobieta");
+		comboCw1.getItems().clear();
 		comboCw1.getItems().addAll(obslist2);
+		Train_ex.getItems().clear();
 		Train_ex.getItems().addAll(obslist2);
+		Train_series.getItems().clear();
 		Train_series.getItems().addAll("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15",
 				"16", "17", "18", "19", "20");
+		Train_series1.getItems().clear();
 		Train_series1.getItems().addAll("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15",
 				"16", "17", "18", "19", "20");
+		Train_time.getItems().clear();
 		Train_time.getItems().addAll("0:30", "1:00", "1:30", "2:00", "2:30", "3:00", "3:30", "4:00", "4:30", "5:00");
+		loadProfil();
+		if (!blad) {
+			loadMain();
+			LoadTableView();
+			Maxes_Table();
+			label1.setDisable(true);
+			imie.setDisable(true);
+			nazwisko.setDisable(true);
+			wzrost.setDisable(true);
+			waga.setDisable(true);
+			data.setDisable(true);
+			plec.setDisable(true);
+			img.setDisable(true);
+			radioGraf.setDisable(true);
+			ostatnitrening.setDisable(true);
+			checkBMI.setDisable(true);
+			comboCw1.setDisable(true);
 
-		label1.setDisable(true);
-		imie.setDisable(true);
-		nazwisko.setDisable(true);
-		wzrost.setDisable(true);
-		waga.setDisable(true);
-		data.setDisable(true);
-		plec.setDisable(true);
-		img.setDisable(true);
-		radioGraf.setDisable(true);
-		ostatnitrening.setDisable(true);
-		checkBMI.setDisable(true);
-		comboCw1.setDisable(true);
-		checkCW1.setDisable(true);
-
-		Save_Click.setVisible(false);
-		ToggleGroup radioTrainGroup = new ToggleGroup();
-		radioBtn_strength_CT.setToggleGroup(radioTrainGroup);
-		radioBtn_endurance_CT.setToggleGroup(radioTrainGroup);
-		radioBtn_muscle_CT.setToggleGroup(radioTrainGroup);
-		radioBtn_strength_CT.setSelected(true);
-		Training train = new Training();
-		train.AddExerciseFromDatabase();
-	}
-
-	public void Maxes_Table()
-	{
-		table_Maxes.getItems().clear();
-		try {
-			Connection con = ds.getConnection();
-			ResultSet rs = con.createStatement().executeQuery("Select * from Exercises");
-			while (rs.next()) {
-				obslist1.add(new ExercisesDB(rs.getString("id"), rs.getString("type"), rs.getString("exercises"),
-						rs.getString("max")));
-			}
-		} catch (SQLException e) {
-			System.out.print("B³¹d");
+			Save_Click.setVisible(false);
+			ToggleGroup radioTrainGroup = new ToggleGroup();
+			radioBtn_strength_CT.setToggleGroup(radioTrainGroup);
+			radioBtn_endurance_CT.setToggleGroup(radioTrainGroup);
+			radioBtn_muscle_CT.setToggleGroup(radioTrainGroup);
+			radioBtn_strength_CT.setSelected(true);
+			Training train = new Training();
+			train.AddExerciseFromDatabase();
 		}
-
-		exerciseCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getExercises()));
-		maxCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getMax()));
-		
-		table_Maxes.setItems(obslist1);
 	}
-	
+
 	private void loadMain() {
 		Main_Image.setImage(image);
 		Main_Imie.setText(dane[0]);
@@ -286,13 +216,16 @@ public class Controller {
 		Main_Wzrost.setText(dane[3] + " cm");
 		LoadTableView();
 		if (radioGraf.isSelected()) {
+			LineChart();
 			Main_Graf.setVisible(true);
 			table.setVisible(false);
+			Main_Show.setVisible(false);
 			Main_DeleteAll.setVisible(false);
 			Main_DeleteOne.setVisible(false);
 
 		} else {
 			table.setVisible(true);
+			Main_Show.setVisible(true);
 			Main_Graf.setVisible(false);
 			Main_DeleteAll.setVisible(true);
 			Main_DeleteOne.setVisible(true);
@@ -318,10 +251,14 @@ public class Controller {
 			FileInputStream fi = new FileInputStream(new File("Profil.txt"));
 			ObjectInputStream oi = new ObjectInputStream(fi);
 			Profil pr1 = (Profil) oi.readObject();
-
+			dane = pr1.toString().split("\n");
+			for (int i = 0; i < dane.length; i++) {
+				if (dane[i].equals("")) {
+					blad = true;
+					break;
+				}
+			}
 			if (!pr1.equals(null)) {
-				dane = pr1.toString().split("\n");
-
 				imie.setText(dane[0]);
 				nazwisko.setText(dane[1]);
 				waga.setText(dane[2]);
@@ -338,126 +275,144 @@ public class Controller {
 
 				checkBMI.setSelected(Boolean.parseBoolean(dane[8]));
 				comboCw1.setValue(dane[9]);
-				checkCW1.setSelected(Boolean.parseBoolean(dane[10]));
-			} else {
-				imie.setText("");
-				nazwisko.setText("");
-				waga.setText("");
-				wzrost.setText("");
-//			data.setValue("");
-				plec.setValue("");
-				SetImage("");
-
-				if ("Graf".equals("Graf")) {
-					radioGraf.setSelected(true);
-				} else {
-					ostatnitrening.setSelected(true);
-				}
-
-				checkBMI.setSelected(Boolean.parseBoolean(""));
-				comboCw1.setValue("");
-				checkCW1.setSelected(Boolean.parseBoolean(""));
 			}
 			oi.close();
 			fi.close();
 		} catch (FileNotFoundException e) {
 			System.out.println("File not found");
 		} catch (IOException e) {
-			System.out.println("Error initializing stream");
+			blad = true;
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
-	}
-
-	public void EditClick(ActionEvent event) {
-		label1.setDisable(false);
-		imie.setDisable(false);
-		nazwisko.setDisable(false);
-		wzrost.setDisable(false);
-		waga.setDisable(false);
-		data.setDisable(false);
-		plec.setDisable(false);
-		img.setDisable(false);
-		radioGraf.setDisable(false);
-		ostatnitrening.setDisable(false);
-		checkBMI.setDisable(false);
-		comboCw1.setDisable(false);
-		checkCW1.setDisable(false);
-
-		Edit_Click.setVisible(false);
-		Save_Click.setVisible(true);
-	}
-
-	public void ChooseImage(MouseEvent event) {
-		scrollPane.setVisible(true);
-	}
-
-	public void SetImage(String imageID) {
-		switch (imageID) {
-		case "i1":
-			image = new Image(getClass().getResourceAsStream("1.png"));
-			break;
-		case "i2":
-			image = new Image(getClass().getResourceAsStream("2.png"));
-			break;
-		case "i3":
-			image = new Image(getClass().getResourceAsStream("3.png"));
-			break;
-		case "i4":
-			image = new Image(getClass().getResourceAsStream("4.png"));
-			break;
-		case "i5":
-			image = new Image(getClass().getResourceAsStream("5.png"));
-			break;
-		case "i6":
-			image = new Image(getClass().getResourceAsStream("6.png"));
-			break;
-		default:
-			image = new Image(getClass().getResourceAsStream("profilowe.png"));
+		if (blad) {
+			System.out.println("Error initializing stream");
+			Alert alert = new Alert(AlertType.WARNING);
+			alert.setTitle("");
+			alert.setHeaderText(null);
+			alert.setContentText("Brak danych");
+			alert.showAndWait();
+			Settings_App.setVisible(true);
+			Main_App.setVisible(false);
+			Training_App.setVisible(false);
+			scrollPane.setVisible(false);
+			OwnTrain_App.setVisible(false);
+			Save_Click.setVisible(true);
+			Edit_Click.setVisible(false);
 		}
-		img.setImage(image);
 	}
 
-	public void ChooseImageExit(MouseEvent event) {
-		scrollPane.setVisible(false);
-		String s = event.getTarget().toString();
-		imageId = s.substring(13, 15);
-		SetImage(imageId);
-	}
-
-	public void Create_Training(ActionEvent event) {
-
-		if (txtbox_minute_CT.getText().equals("")) {
-			txtbox_minute_CT.setText("0");
-		}
-		if (txtbox_hour_CT.getText().equals("")) {
-			txtbox_hour_CT.setText("0");
-		}
-
+	// Change_Maxes
+	public void Change_Max(ActionEvent event) {
 		try {
-			int time = Integer.parseInt(txtbox_hour_CT.getText()) * 60 + Integer.parseInt(txtbox_minute_CT.getText());
-			int count = trainCreate.CheckBoxCountTraining();
-			if (count > 0) {
-				if (time >= 20 * count)
-					trainingToDB = trainCreate.Generate_Training_Main(time, true, count);
-				else
-					trainingToDB = trainCreate.Generate_Training_Main(time, false, count);
+			double max = Double.parseDouble(fix_Max.getText());
+			Connection con = ds.getConnection();
+			PreparedStatement ps = con.prepareStatement("UPDATE Exercises SET max = " + max + " WHERE id = ?;");
+			ExercisesDB train = table_Maxes.getSelectionModel().getSelectedItem();
+			ps.setString(1, train.getId());
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			System.out.print("B³¹d" + e);
+		}catch (Exception e)
+		{
+			Alert alert = new Alert(AlertType.WARNING);
+			alert.setTitle("");
+			alert.setHeaderText(null);
+			alert.setContentText("le wpisano maksa, sprawdŸ poprawnoœæ wprowadzonych danych.");
+			alert.showAndWait();
+
+		}
+		Maxes_Table();
+	}
+
+	public void Change_Maxes_OT(ActionEvent event) {
+		Anchor_Fix_OT.setVisible(true);
+		Anchor_Create_OT.setVisible(false);
+	}
+
+	public void Create_Training_OT(ActionEvent event) {
+		Anchor_Fix_OT.setVisible(false);
+		Anchor_Create_OT.setVisible(true);
+	}
+
+	public void Maxes_Table() {
+		table_Maxes.getItems().clear();
+		try {
+			Connection con = ds.getConnection();
+			ResultSet rs = con.createStatement().executeQuery("Select * from Exercises");
+			while (rs.next()) {
+				obslist1.add(new ExercisesDB(rs.getString("id"), rs.getString("type"), rs.getString("exercises"),
+						rs.getString("max")));
+			}
+		} catch (SQLException e) {
+			System.out.print("B³¹d");
+		}
+
+		exerciseCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getExercises()));
+		maxCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getMax()));
+
+		table_Maxes.setItems(obslist1);
+	}
+
+	// OwnTraining_App
+	public void SaveExercise(ActionEvent event) {
+		try {
+			for (int i = 0; i < Train_AList.size(); i++) {
+				if (i == 0) {
+					training = Train_AList.get(0);
+				} else
+					training = training + "; " + Train_AList.get(i);
+			}
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+			LocalDateTime now = LocalDateTime.now();
+			Connection con = ds.getConnection();
+			PreparedStatement ps = con.prepareStatement("INSERT INTO Trainings(ID_training,Date,Name) VALUES(?,?,?)");
+			ps.setString(2, dtf.format(now));
+			ps.setString(3, training);
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			System.out.print("B³¹d" + e);
+		}
+	}
+
+	public void AddExercise(ActionEvent event) {
+		try
+		{
+			
+			@SuppressWarnings("unused")
+			double d = Double.parseDouble(Train_Weight.getText());		
+			if (!(Train_ex.getValue() == null) && !(Train_series.getValue() == null) && !(Train_series1.getValue() == null)
+					&& !(Train_Weight.equals(null)) && !(Train_time.getValue() == null)) {
+				Train_list.getItems().clear();
+				Train_AList.add(Train_ex.getValue() + "," + Train_series.getValue() + "x" + Train_series1.getValue() + ","
+						+ Train_Weight.getText() + "," + Train_time.getValue());
+				Train_list.getItems().addAll(Train_AList);
 			} else {
-				Alert alert = new Alert(AlertType.INFORMATION);
-				alert.setTitle("Informacja dla U¯YTKOWNIKA");
+				Alert alert = new Alert(AlertType.WARNING);
+				alert.setTitle("");
 				alert.setHeaderText(null);
-				alert.setContentText("Trudno zrobiæ trening bez æwiczeñ. \nProszê wybierz co chcesz dzisiaj trenowaæ.");
+				alert.setContentText("Nie wype³niono wszystkich danych");
 				alert.showAndWait();
 			}
-		} catch (Exception e) {
-			Alert alert = new Alert(AlertType.INFORMATION);
-			alert.setTitle("Informacja dla U¯YTKOWNIKA");
+		}catch (NumberFormatException e)
+		{
+			Alert alert = new Alert(AlertType.WARNING);
+			alert.setTitle("");
 			alert.setHeaderText(null);
-			alert.setContentText("Przepraszamy. Coœ posz³o nie tak:\n\n" + e + "\n\nSpróbuj jeszcze raz.");
+			alert.setContentText("SprawdŸ poprawnoœæ wprowadzonej wagi w treningu.");
 			alert.showAndWait();
-		}
+		}		
 	}
 
+	public void DelExercise(ActionEvent event) {
+		int a = Train_list.getSelectionModel().getSelectedIndex();
+		if (a >= 0) {
+			Train_AList.remove(a);
+			Train_list.getItems().remove(a);
+		}
+	}
+	
+	// Training_App
 	public void Help_CT(ActionEvent event) {
 		Alert alert = new Alert(AlertType.INFORMATION);
 		alert.setTitle("Pomoc");
@@ -500,23 +455,214 @@ public class Controller {
 		}
 	}
 
+	public void Create_Training(ActionEvent event) {
+
+		if (txtbox_minute_CT.getText().equals("")) {
+			txtbox_minute_CT.setText("0");
+		}
+		if (txtbox_hour_CT.getText().equals("")) {
+			txtbox_hour_CT.setText("0");
+		}
+
+		try {
+			int time = Integer.parseInt(txtbox_hour_CT.getText()) * 60 + Integer.parseInt(txtbox_minute_CT.getText());
+			int count = trainCreate.CheckBoxCountTraining();
+			if (count > 0) {
+				if (time >= 20 * count)
+					trainingToDB = trainCreate.Generate_Training_Main(time, true, count);
+				else
+					trainingToDB = trainCreate.Generate_Training_Main(time, false, count);
+			} else {
+				Alert alert = new Alert(AlertType.INFORMATION);
+				alert.setTitle("Informacja dla U¯YTKOWNIKA");
+				alert.setHeaderText(null);
+				alert.setContentText("Trudno zrobiæ trening bez æwiczeñ. \nProszê wybierz co chcesz dzisiaj trenowaæ.");
+				alert.showAndWait();
+			}
+		} catch (Exception e) {
+			Alert alert = new Alert(AlertType.INFORMATION);
+			alert.setTitle("Informacja dla U¯YTKOWNIKA");
+			alert.setHeaderText(null);
+			alert.setContentText("Przepraszamy. Coœ posz³o nie tak:\n\n" + e + "\n\nSpróbuj jeszcze raz.");
+			alert.showAndWait();
+		}
+	}
+
+	// Setting_App
+	public void EditClick(ActionEvent event) {
+		label1.setDisable(false);
+		imie.setDisable(false);
+		nazwisko.setDisable(false);
+		wzrost.setDisable(false);
+		waga.setDisable(false);
+		data.setDisable(false);
+		plec.setDisable(false);
+		img.setDisable(false);
+		radioGraf.setDisable(false);
+		ostatnitrening.setDisable(false);
+		checkBMI.setDisable(false);
+		comboCw1.setDisable(false);
+
+		Edit_Click.setVisible(false);
+		Save_Click.setVisible(true);
+	}
+
+	public void ChooseImage(MouseEvent event) {
+		scrollPane.setVisible(true);
+	}
+
+	public void SetImage(String imageID) {
+		switch (imageID) {
+		case "i1":
+			image = new Image(getClass().getResourceAsStream("1.png"));
+			break;
+		case "i2":
+			image = new Image(getClass().getResourceAsStream("2.png"));
+			break;
+		case "i3":
+			image = new Image(getClass().getResourceAsStream("3.png"));
+			break;
+		case "i4":
+			image = new Image(getClass().getResourceAsStream("4.png"));
+			break;
+		case "i5":
+			image = new Image(getClass().getResourceAsStream("5.png"));
+			break;
+		case "i6":
+			image = new Image(getClass().getResourceAsStream("6.png"));
+			break;
+		default:
+			image = new Image(getClass().getResourceAsStream("profilowe.png"));
+		}
+		img.setImage(image);
+	}
+
+	public void ChooseImageExit(MouseEvent event) {
+		scrollPane.setVisible(false);
+		String s = event.getTarget().toString();
+		imageId = s.substring(13, 15);
+		SetImage(imageId);
+	}
+
+	public void SaveClick(ActionEvent event) {
+		blad = false;
+		raportBledu = "Proszê sprawdziæ poprawnoœæ danych w polach:\n";
+		if (radioGraf.isSelected()) {
+			radioGrp = "Graf";
+		} else {
+			radioGrp = "ostatnitrening";
+		}
+		if (checkValues()) {
+			Alert alert = new Alert(AlertType.WARNING);
+			alert.setTitle("");
+			alert.setHeaderText(null);
+			alert.setContentText(raportBledu);
+			alert.showAndWait();
+		} else {
+			Profil p1 = new Profil(imie.getText(), nazwisko.getText(), waga.getText(), wzrost.getText(),
+					data.getValue(), plec.getValue().toString(), imageId, radioGrp, checkBMI.isSelected(),
+					comboCw1.getValue().toString(), true);
+
+			try {
+				FileOutputStream f = new FileOutputStream(new File("Profil.txt"));
+				ObjectOutputStream o = new ObjectOutputStream(f);
+
+				// Write objects to file
+				o.writeObject(p1);
+
+				o.close();
+				f.close();
+
+				label1.setDisable(true);
+				imie.setDisable(true);
+				nazwisko.setDisable(true);
+				wzrost.setDisable(true);
+				waga.setDisable(true);
+				data.setDisable(true);
+				plec.setDisable(true);
+				img.setDisable(true);
+				radioGraf.setDisable(true);
+				ostatnitrening.setDisable(true);
+				checkBMI.setDisable(true);
+				comboCw1.setDisable(true);
+
+				Edit_Click.setVisible(true);
+				Save_Click.setVisible(false);
+
+			} catch (FileNotFoundException e) {
+				System.out.println("File not found");
+			} catch (IOException e) {
+				System.out.println("Error initializing stream");
+			}
+			loadOnStart();
+		}
+	}
+
+	public boolean checkValues() {
+		Boolean valueBlad = false;
+		if (comboCw1.getValue().equals("") || imie.getText().equals("") || nazwisko.getText().equals("")
+				|| plec.getValue().equals("") || data.getValue().equals(null)) {
+			raportBledu += "Brak wszystkich danych \n";
+			valueBlad = true;
+		}
+		for (int i = 0; i < imie.getText().length(); i++) {
+			if (Character.isDigit(imie.getText().charAt(i))) {
+				raportBledu += "Imie \n";
+				valueBlad = true;
+				break;
+			}
+		}
+		for (int i = 0; i < nazwisko.getText().length(); i++) {
+			if (Character.isDigit(nazwisko.getText().charAt(i))) {
+				raportBledu += "Nazwisko \n";
+				valueBlad = true;
+				break;
+			}
+		}
+		try {
+			@SuppressWarnings("unused")
+			double d = Double.parseDouble(wzrost.getText());
+			@SuppressWarnings("unused")
+			double a = Double.parseDouble(waga.getText());
+		} catch (NumberFormatException nfe) {
+			raportBledu += "Waga, Wzrost \n";
+			valueBlad = true;
+		}
+		if (data.getValue().equals(null)) {
+			raportBledu += "Data urodzenia \n";
+			valueBlad = true;
+		}
+		return valueBlad;
+	}
+	
+	// Main_App
+	public void LineChart() {
+		Main_Graf.getData().clear();
+		String done = "";
+		XYChart.Series<String, Number> series = new XYChart.Series<String, Number>();
+		series.setName(comboCw1.getValue());
+		for (int i = 0; i < obslist.size(); i++) {
+			done = table.getItems().get(i).name;
+			String[] words = done.split(";");
+			String[] wordsInside2;
+			for (int j = 0; j < words.length; j++) {
+				wordsInside2 = words[j].split("\\,");
+				if (wordsInside2[0].equals(comboCw1.getValue())) {
+					series.getData().add(new XYChart.Data<String, Number>(table.getItems().get(i).date,
+							Double.parseDouble(wordsInside2[2])));
+					break;
+				}
+			}
+		}
+		Main_Graf.getData().add(series);
+	}
+
 	public void Delete_Training() {
 		try {
 			Connection con = ds.getConnection();
 			PreparedStatement ps = con.prepareStatement("DELETE FROM Trainings WHERE ID_training = ?;");
 			finishedTrainings train = table.getSelectionModel().getSelectedItem();
 			ps.setString(1, train.getId());
-			ps.executeUpdate();
-		} catch (SQLException e) {
-			System.out.print("B³¹d" + e);
-		}
-		LoadTableView();
-	}
-
-	public void Delete_TrainingAll() {
-		try {
-			Connection con = ds.getConnection();
-			PreparedStatement ps = con.prepareStatement("DELETE FROM Trainings;");
 			ps.executeUpdate();
 		} catch (SQLException e) {
 			System.out.print("B³¹d" + e);
@@ -549,7 +695,6 @@ public class Controller {
 		} catch (Exception e) {
 			System.out.print("B³¹d" + e);
 		}
-
 	}
 
 	public void Hide_Training(ActionEvent event) {
@@ -557,48 +702,34 @@ public class Controller {
 		btn_hideTraining.setVisible(false);
 	}
 
-	public void AddExercise(ActionEvent event) {
-		if (!(Train_ex.getValue() == null) && !(Train_series.getValue() == null) && !(Train_series1.getValue() == null)
-				&& !(Train_Weight.equals(null)) && !(Train_time.getValue() == null)) {
-			Train_list.getItems().clear();
-			Train_AList.add(Train_ex.getValue() + ", " + Train_series.getValue() + "x" + Train_series1.getValue() + ", "
-					+ Train_Weight.getText() + ", " + Train_time.getValue());
-			Train_list.getItems().addAll(Train_AList);
-		} else {
-			Alert alert = new Alert(AlertType.WARNING);
-			alert.setTitle("");
-			alert.setHeaderText(null);
-			alert.setContentText("Nie wype³niono wszystkich danych");
-			alert.showAndWait();
-		}
-	}
-
-	public void DelExercise(ActionEvent event) {
-		int a = Train_list.getSelectionModel().getSelectedIndex();
-		if (a >= 0) {
-			Train_AList.remove(a);
-			Train_list.getItems().remove(a);
-		}
-	}
-
-	public void SaveExercise(ActionEvent event) {
+	public void LoadTableView() {
+		table.getItems().clear();
 		try {
-			for (int i = 0; i < Train_AList.size(); i++) {
-				if (i == 0) {
-					training = Train_AList.get(0);
-				} else
-					training = training + "; " + Train_AList.get(i);
-			}
-			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");
-			LocalDateTime now = LocalDateTime.now();
 			Connection con = ds.getConnection();
-			PreparedStatement ps = con.prepareStatement("INSERT INTO Trainings(ID_training,Date,Name) VALUES(?,?,?)");
-			ps.setString(2, dtf.format(now));
-			ps.setString(3, training);
+			ResultSet rs = con.createStatement().executeQuery("Select * from Trainings");
+			while (rs.next()) {
+				obslist.add(
+						new finishedTrainings(rs.getString("ID_training"), rs.getString("Date"), rs.getString("Name")));
+			}
+		} catch (SQLException e) {
+			System.out.print("B³¹d");
+		}
+
+		dateCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDate()));
+		nameCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
+
+		table.setItems(obslist);
+	}
+
+	public void Delete_TrainingAll() {
+		try {
+			Connection con = ds.getConnection();
+			PreparedStatement ps = con.prepareStatement("DELETE FROM Trainings;");
 			ps.executeUpdate();
 		} catch (SQLException e) {
 			System.out.print("B³¹d" + e);
 		}
+		LoadTableView();
 	}
 
 	// Zmiana okna
@@ -610,7 +741,7 @@ public class Controller {
 		OwnTrain_App.setVisible(false);
 		loadMain();
 	}
-
+	
 	public void OwnTrainClick(ActionEvent event) {
 		Main_App.setVisible(false);
 		Settings_App.setVisible(false);
@@ -618,7 +749,7 @@ public class Controller {
 		scrollPane.setVisible(false);
 		OwnTrain_App.setVisible(true);
 	}
-
+	
 	public void ProfilClick(ActionEvent event) {
 		Settings_App.setVisible(true);
 		Main_App.setVisible(false);
@@ -626,7 +757,7 @@ public class Controller {
 		scrollPane.setVisible(false);
 		OwnTrain_App.setVisible(false);
 	}
-
+	
 	public void TrainingClick(ActionEvent event) {
 		Settings_App.setVisible(false);
 		Main_App.setVisible(false);
@@ -634,28 +765,5 @@ public class Controller {
 		scrollPane.setVisible(false);
 		OwnTrain_App.setVisible(false);
 	}
-	
-	public void Change_Max(ActionEvent event) {
-		try {
-			double max = Double.parseDouble(fix_Max.getText());
-			Connection con = ds.getConnection();
-			PreparedStatement ps = con.prepareStatement("UPDATE Exercises SET max = " +max+ " WHERE id = ?;");
-			ExercisesDB train = table_Maxes.getSelectionModel().getSelectedItem();
-			ps.setString(1, train.getId());
-			ps.executeUpdate();
-		} catch (SQLException e) {
-			System.out.print("B³¹d" + e);
-		}
-		Maxes_Table();
-	}
 
-	public void Change_Maxes_OT(ActionEvent event) {
-		Anchor_Fix_OT.setVisible(true);
-		Anchor_Create_OT.setVisible(false);	
-	}
-
-	public void Create_Training_OT(ActionEvent event) {
-		Anchor_Fix_OT.setVisible(false);
-		Anchor_Create_OT.setVisible(true);	
-	}
 }
