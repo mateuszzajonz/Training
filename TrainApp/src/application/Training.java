@@ -1,6 +1,7 @@
 package application;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -55,6 +56,8 @@ public class Training extends Main {
 				obslist.add(new ExercisesDB(rs.getString("id"), rs.getString("type"), rs.getString("exercises"),
 						rs.getString("max")));
 			}
+			rs.close();
+			con.close();
 		} catch (SQLException e) {
 			System.out.print("B³¹d");
 		}
@@ -62,6 +65,7 @@ public class Training extends Main {
 			listOfExercises.add(name.type + "," + name.exercises);
 			exerciseMAX.add(name.exercises + "," + name.max);
 		}
+		
 	}
 
 	public Controller Main_CT_Function() // CT - Create Training
@@ -300,8 +304,9 @@ public class Training extends Main {
 		double weight = 0;
 		for (String name : exerciseMAX) {
 			String[] word = name.split("\\,");
+			word[1] = updateMax(word[0]);			
 			if (word[0].equals(listOfExercises.get(i).toString())) {
-				if (word[1].equals(null) || word[1].equals("null"))
+				if (word[1].equals(null) || word[1].equals("null")||word[1].equals("0.0"))
 					weight = 0.0;
 				else {
 					switch (countMax) {
@@ -319,8 +324,25 @@ public class Training extends Main {
 				break;
 			}
 		}
-
 		return weight + "";
+	}
+	
+	public String updateMax(String exercise)
+	{
+		try {
+			Connection con = ds.getConnection();
+			PreparedStatement pstmt  = con.prepareStatement("Select max from Exercises WHERE exercises = ?");
+			pstmt.setString(1,exercise);
+			ResultSet rs  = pstmt.executeQuery();
+			exercise = rs.getString("max");
+			pstmt.close();
+			rs.close();
+			con.close();
+		} catch (SQLException e) {
+			System.out.print("B³¹d:" + e);
+		}
+		
+		return exercise;
 	}
 
 	public void AddExercisesToLists(Controller myController) {

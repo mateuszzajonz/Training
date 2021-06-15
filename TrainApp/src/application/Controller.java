@@ -1,5 +1,6 @@
 package application;
 
+import java.beans.Statement;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -10,6 +11,7 @@ import java.io.ObjectOutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -140,8 +142,7 @@ public class Controller {
 	String[] dane;
 	SQLiteDataSource ds = null;
 
-	
-	//Data storage
+	// Data storage
 	public void loadDB() {
 		try {
 			ds = new SQLiteDataSource();
@@ -160,6 +161,8 @@ public class Controller {
 			while (rs.next()) {
 				obslist2.add(rs.getString("exercises"));
 			}
+			rs.close();
+			con.close();
 		} catch (SQLException e) {
 			System.out.print("B³¹d" + e);
 		} catch (Exception e) {
@@ -311,10 +314,11 @@ public class Controller {
 			ExercisesDB train = table_Maxes.getSelectionModel().getSelectedItem();
 			ps.setString(1, train.getId());
 			ps.executeUpdate();
+			ps.close();
+			con.close();
 		} catch (SQLException e) {
 			System.out.print("B³¹d" + e);
-		}catch (Exception e)
-		{
+		} catch (Exception e) {
 			Alert alert = new Alert(AlertType.WARNING);
 			alert.setTitle("");
 			alert.setHeaderText(null);
@@ -344,6 +348,8 @@ public class Controller {
 				obslist1.add(new ExercisesDB(rs.getString("id"), rs.getString("type"), rs.getString("exercises"),
 						rs.getString("max")));
 			}
+			rs.close();
+			con.close();
 		} catch (SQLException e) {
 			System.out.print("B³¹d");
 		}
@@ -370,22 +376,24 @@ public class Controller {
 			ps.setString(2, dtf.format(now));
 			ps.setString(3, training);
 			ps.executeUpdate();
+			ps.close();
+			con.close();
 		} catch (SQLException e) {
 			System.out.print("B³¹d" + e);
 		}
 	}
 
 	public void AddExercise(ActionEvent event) {
-		try
-		{
-			
+		try {
+
 			@SuppressWarnings("unused")
-			double d = Double.parseDouble(Train_Weight.getText());		
-			if (!(Train_ex.getValue() == null) && !(Train_series.getValue() == null) && !(Train_series1.getValue() == null)
-					&& !(Train_Weight.equals(null)) && !(Train_time.getValue() == null)) {
+			double d = Double.parseDouble(Train_Weight.getText());
+			if (!(Train_ex.getValue() == null) && !(Train_series.getValue() == null)
+					&& !(Train_series1.getValue() == null) && !(Train_Weight.equals(null))
+					&& !(Train_time.getValue() == null)) {
 				Train_list.getItems().clear();
-				Train_AList.add(Train_ex.getValue() + "," + Train_series.getValue() + "x" + Train_series1.getValue() + ","
-						+ Train_Weight.getText() + "," + Train_time.getValue());
+				Train_AList.add(Train_ex.getValue() + "," + Train_series.getValue() + "x" + Train_series1.getValue()
+						+ "," + Train_Weight.getText() + "," + Train_time.getValue());
 				Train_list.getItems().addAll(Train_AList);
 			} else {
 				Alert alert = new Alert(AlertType.WARNING);
@@ -394,14 +402,13 @@ public class Controller {
 				alert.setContentText("Nie wype³niono wszystkich danych");
 				alert.showAndWait();
 			}
-		}catch (NumberFormatException e)
-		{
+		} catch (NumberFormatException e) {
 			Alert alert = new Alert(AlertType.WARNING);
 			alert.setTitle("");
 			alert.setHeaderText(null);
 			alert.setContentText("SprawdŸ poprawnoœæ wprowadzonej wagi w treningu.");
 			alert.showAndWait();
-		}		
+		}
 	}
 
 	public void DelExercise(ActionEvent event) {
@@ -411,7 +418,7 @@ public class Controller {
 			Train_list.getItems().remove(a);
 		}
 	}
-	
+
 	// Training_App
 	public void Help_CT(ActionEvent event) {
 		Alert alert = new Alert(AlertType.INFORMATION);
@@ -442,7 +449,7 @@ public class Controller {
 	}
 
 	public void Accept_CT_Action() {
-		try {
+		try {			
 			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");
 			LocalDateTime now = LocalDateTime.now();
 			Connection con = ds.getConnection();
@@ -450,6 +457,40 @@ public class Controller {
 			ps.setString(2, dtf.format(now));
 			ps.setString(3, trainingToDB);
 			ps.executeUpdate();
+			ps.close();
+			con.close();
+		} catch (SQLException e) {
+			System.out.print("B³¹d" + e);
+		}
+		
+		int rowNr = 0;
+		try {
+			Connection con = ds.getConnection();
+			PreparedStatement pstmt  = con.prepareStatement("Select trainingNr from PastTrainings");
+			ResultSet rs  = pstmt.executeQuery();
+			while(rs.next())
+			{
+				rowNr = rs.getInt("trainingNr");
+			}	
+			rs.close();			
+			
+			rs = con.createStatement().executeQuery("SELECT * FROM PastTrainings");
+			String[] word = trainingToDB.split("\\;");
+
+			PreparedStatement ps = con.prepareStatement(
+					"INSERT INTO PastTrainings(trainingNr,exercise,SxR,weight,time) " + "VALUES(?,?,?,?,?)");
+
+			for (int i = 0; i < word.length;i++) {
+				String[] wordInside = word[i].split("\\,");
+				ps.setInt(1, (rowNr+1));
+				ps.setString(2, wordInside[0]);
+				ps.setString(3, wordInside[1]);
+				ps.setString(4, wordInside[2]);
+				ps.setString(5, wordInside[3]);
+				ps.executeUpdate();
+			}
+			rs.close();
+			con.close();
 		} catch (SQLException e) {
 			System.out.print("B³¹d" + e);
 		}
@@ -634,7 +675,7 @@ public class Controller {
 		}
 		return valueBlad;
 	}
-	
+
 	// Main_App
 	public void LineChart() {
 		Main_Graf.getData().clear();
@@ -664,6 +705,8 @@ public class Controller {
 			finishedTrainings train = table.getSelectionModel().getSelectedItem();
 			ps.setString(1, train.getId());
 			ps.executeUpdate();
+			ps.close();
+			con.close();
 		} catch (SQLException e) {
 			System.out.print("B³¹d" + e);
 		}
@@ -711,6 +754,8 @@ public class Controller {
 				obslist.add(
 						new finishedTrainings(rs.getString("ID_training"), rs.getString("Date"), rs.getString("Name")));
 			}
+			rs.close();
+			con.close();
 		} catch (SQLException e) {
 			System.out.print("B³¹d");
 		}
@@ -726,6 +771,8 @@ public class Controller {
 			Connection con = ds.getConnection();
 			PreparedStatement ps = con.prepareStatement("DELETE FROM Trainings;");
 			ps.executeUpdate();
+			ps.close();
+			con.close();
 		} catch (SQLException e) {
 			System.out.print("B³¹d" + e);
 		}
@@ -741,7 +788,7 @@ public class Controller {
 		OwnTrain_App.setVisible(false);
 		loadMain();
 	}
-	
+
 	public void OwnTrainClick(ActionEvent event) {
 		Main_App.setVisible(false);
 		Settings_App.setVisible(false);
@@ -749,7 +796,7 @@ public class Controller {
 		scrollPane.setVisible(false);
 		OwnTrain_App.setVisible(true);
 	}
-	
+
 	public void ProfilClick(ActionEvent event) {
 		Settings_App.setVisible(true);
 		Main_App.setVisible(false);
@@ -757,7 +804,7 @@ public class Controller {
 		scrollPane.setVisible(false);
 		OwnTrain_App.setVisible(false);
 	}
-	
+
 	public void TrainingClick(ActionEvent event) {
 		Settings_App.setVisible(false);
 		Main_App.setVisible(false);
