@@ -30,13 +30,13 @@
 
 <AnchorPane minWidth="400.0" prefHeight="700.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Controller">
    <children>
-      <AnchorPane fx:id="Main_App" prefHeight="700.0" prefWidth="400.0" visible="false">
+      <AnchorPane fx:id="Main_App" prefHeight="700.0" prefWidth="400.0">
          <children>
             <Button fx:id="Main_DeleteOne" layoutX="64.0" layoutY="368.0" mnemonicParsing="false" onAction="#Delete_Training" text="Usuń rekord" />
             <TableView fx:id="table" layoutX="30.0" layoutY="158.0" prefHeight="200.0" prefWidth="340.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0">
               <columns>
-                <TableColumn fx:id="dateCol" prefWidth="100.0" text="Data" />
-                  <TableColumn fx:id="nameCol" minWidth="0.0" prefWidth="238.0" text="Nazwa" />
+                <TableColumn fx:id="dateCol" prefWidth="131.0" text="Data" />
+                  <TableColumn fx:id="nameCol" minWidth="0.0" prefWidth="207.0" text="Nazwa" />
               </columns>
             </TableView>
             <LineChart fx:id="Main_Graf" layoutX="52.0" layoutY="148.0" prefHeight="320.0" prefWidth="344.0" visible="false" AnchorPane.leftAnchor="28.0" AnchorPane.rightAnchor="28.0">
@@ -348,7 +348,7 @@
             </GridPane>
          </children>
       </AnchorPane>
-      <AnchorPane fx:id="Settings_App" prefHeight="700.0" prefWidth="400.0">
+      <AnchorPane fx:id="Settings_App" prefHeight="700.0" prefWidth="400.0" visible="false">
          <children>
             <HBox alignment="TOP_CENTER" layoutX="100.0" layoutY="61.0" prefHeight="100.0" prefWidth="200.0">
                <children>

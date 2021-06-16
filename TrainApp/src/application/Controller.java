@@ -71,7 +71,7 @@ public class Controller {
 	public ToggleGroup radioBtns;
 	public CheckBox checkBMI;
 	public ImageView i1, i2, i3, i4, i5, i6;
-	public Boolean blad = false;
+	public Boolean blad = false,Setting_Img=false;
 	public String raportBledu = "Proszê sprawdziæ poprawnoœæ danych w polach:\n";
 
 	// main app
@@ -82,6 +82,8 @@ public class Controller {
 	public TextArea Main_OstatniTrening;
 	public Button Main_DeleteOne, Main_DeleteAll;
 	public Button Main_Show;
+	ObservableList<finishedTrainings> Main_obslist = FXCollections.observableArrayList();
+	ObservableList<finishedTrainings> Main_Graflist = FXCollections.observableArrayList();
 
 	// Side
 	public TableView<finishedTrainings> table;
@@ -137,6 +139,7 @@ public class Controller {
 	public TableView<ExercisesDB> table_Maxes;
 	ObservableList<ExercisesDB> obslist1 = FXCollections.observableArrayList();
 
+	int rowNr = 0;
 	String radioGrp, imageId;
 	Image image;
 	String[] dane;
@@ -363,19 +366,48 @@ public class Controller {
 	// OwnTraining_App
 	public void SaveExercise(ActionEvent event) {
 		try {
+			Connection con = ds.getConnection();
+			PreparedStatement pstmt = con.prepareStatement("Select MAX(trainingNr) AS Max from PastTrainings");
+			ResultSet rs = pstmt.executeQuery();
+			rowNr = rs.getInt("Max");
+			rs.close();
+			con.close();
+		} catch (SQLException e) {
+			System.out.print("B³¹d" + e);
+		}
+		try {
 			for (int i = 0; i < Train_AList.size(); i++) {
 				if (i == 0) {
 					training = Train_AList.get(0);
 				} else
 					training = training + "; " + Train_AList.get(i);
 			}
-			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
 			LocalDateTime now = LocalDateTime.now();
 			Connection con = ds.getConnection();
 			PreparedStatement ps = con.prepareStatement("INSERT INTO Trainings(ID_training,Date,Name) VALUES(?,?,?)");
 			ps.setString(2, dtf.format(now));
-			ps.setString(3, training);
+			ps.setInt(3, (rowNr + 1));
 			ps.executeUpdate();
+			ps.close();
+			con.close();
+		} catch (SQLException e) {
+			System.out.print("B³¹d" + e);
+		}
+		try {
+			Connection con = ds.getConnection();
+			PreparedStatement ps = con.prepareStatement(
+					"INSERT INTO PastTrainings(trainingNr,exercise,SxR,weight,time) " + "VALUES(?,?,?,?,?)");
+
+			for (int i = 0; i < Train_AList.size(); i++) {
+				String[] wordInside = Train_AList.get(i).split("\\,");
+				ps.setInt(1, (rowNr + 1));
+				ps.setString(2, wordInside[0]);
+				ps.setString(3, wordInside[1]);
+				ps.setString(4, wordInside[2]);
+				ps.setString(5, wordInside[3]);
+				ps.executeUpdate();
+			}
 			ps.close();
 			con.close();
 		} catch (SQLException e) {
@@ -449,40 +481,41 @@ public class Controller {
 	}
 
 	public void Accept_CT_Action() {
-		try {			
-			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+		try {
+			Connection con = ds.getConnection();
+			PreparedStatement pstmt = con.prepareStatement("Select MAX(trainingNr) AS Max from PastTrainings");
+			ResultSet rs = pstmt.executeQuery();
+			rowNr = rs.getInt("Max");
+			rs.close();
+			con.close();
+		} catch (SQLException e) {
+			System.out.print("B³¹d" + e);
+		}
+		try {
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
 			LocalDateTime now = LocalDateTime.now();
 			Connection con = ds.getConnection();
 			PreparedStatement ps = con.prepareStatement("INSERT INTO Trainings(ID_training,Date,Name) VALUES(?,?,?)");
 			ps.setString(2, dtf.format(now));
-			ps.setString(3, trainingToDB);
+			ps.setInt(3, rowNr + 1);
 			ps.executeUpdate();
 			ps.close();
 			con.close();
 		} catch (SQLException e) {
 			System.out.print("B³¹d" + e);
 		}
-		
-		int rowNr = 0;
+
 		try {
 			Connection con = ds.getConnection();
-			PreparedStatement pstmt  = con.prepareStatement("Select trainingNr from PastTrainings");
-			ResultSet rs  = pstmt.executeQuery();
-			while(rs.next())
-			{
-				rowNr = rs.getInt("trainingNr");
-			}	
-			rs.close();			
-			
-			rs = con.createStatement().executeQuery("SELECT * FROM PastTrainings");
+			ResultSet rs = con.createStatement().executeQuery("SELECT * FROM PastTrainings");
 			String[] word = trainingToDB.split("\\;");
 
 			PreparedStatement ps = con.prepareStatement(
 					"INSERT INTO PastTrainings(trainingNr,exercise,SxR,weight,time) " + "VALUES(?,?,?,?,?)");
 
-			for (int i = 0; i < word.length;i++) {
+			for (int i = 0; i < word.length; i++) {
 				String[] wordInside = word[i].split("\\,");
-				ps.setInt(1, (rowNr+1));
+				ps.setInt(1, (rowNr + 1));
 				ps.setString(2, wordInside[0]);
 				ps.setString(3, wordInside[1]);
 				ps.setString(4, wordInside[2]);
@@ -572,8 +605,7 @@ public class Controller {
 		case "i6":
 			image = new Image(getClass().getResourceAsStream("6.png"));
 			break;
-		default:
-			image = new Image(getClass().getResourceAsStream("profilowe.png"));
+
 		}
 		img.setImage(image);
 	}
@@ -583,10 +615,15 @@ public class Controller {
 		String s = event.getTarget().toString();
 		imageId = s.substring(13, 15);
 		SetImage(imageId);
+		Setting_Img = true;
 	}
 
 	public void SaveClick(ActionEvent event) {
 		blad = false;
+		if(!Setting_Img) {
+			imageId = dane[6];
+			Setting_Img = false;
+		}
 		raportBledu = "Proszê sprawdziæ poprawnoœæ danych w polach:\n";
 		if (radioGraf.isSelected()) {
 			radioGrp = "Graf";
@@ -678,32 +715,68 @@ public class Controller {
 
 	// Main_App
 	public void LineChart() {
+		Main_Graf.setAnimated(false);
+		try {
+			Main_Graflist.clear();
+			Connection con = ds.getConnection();
+			ResultSet rs = con.createStatement().executeQuery(
+					"Select exercise, group_concat(weight) AS Weight,group_concat(trainingNr) AS Date from PastTrainings  Group BY exercise");
+			while (rs.next()) {
+				Main_Graflist.add(
+						new finishedTrainings(rs.getString("exercise"), rs.getString("weight"), rs.getInt("Date")));
+			}
+			rs.close();
+			con.close();
+		} catch (SQLException e) {
+			System.out.print("B³¹d" + e);
+		}
 		Main_Graf.getData().clear();
-		String done = "";
 		XYChart.Series<String, Number> series = new XYChart.Series<String, Number>();
 		series.setName(comboCw1.getValue());
-		for (int i = 0; i < obslist.size(); i++) {
-			done = table.getItems().get(i).name;
-			String[] words = done.split(";");
-			String[] wordsInside2;
-			for (int j = 0; j < words.length; j++) {
-				wordsInside2 = words[j].split("\\,");
-				if (wordsInside2[0].equals(comboCw1.getValue())) {
-					series.getData().add(new XYChart.Data<String, Number>(table.getItems().get(i).date,
-							Double.parseDouble(wordsInside2[2])));
-					break;
-				}
+		String[] words = null;
+		for (int i = 0; i < Main_Graflist.size(); i++) {
+			if (comboCw1.getValue().equals(Main_Graflist.get(i).exercise)) {
+				words = Main_Graflist.get(i).weight.split("\\,");
+				break;
 			}
 		}
+		try {
+			for (int i = 0; i < words.length; i++) {
+				series.getData().add(
+						new XYChart.Data<String, Number>(table.getItems().get(i).date, Double.parseDouble(words[i])));
+			}
+		} catch (NullPointerException e) {
+
+		}
 		Main_Graf.getData().add(series);
+	}
+
+	public void Delete_TrainingAll() {
+		try {
+			Connection con = ds.getConnection();
+			PreparedStatement ps = con.prepareStatement("DELETE FROM Trainings");
+			ps.executeUpdate();
+			ps = con.prepareStatement("DELETE FROM PastTrainings");
+			ps.executeUpdate();
+			ps.close();
+			con.close();
+		} catch (SQLException e) {
+			System.out.print("B³¹d" + e);
+		}
+		LoadTableView();
 	}
 
 	public void Delete_Training() {
 		try {
 			Connection con = ds.getConnection();
-			PreparedStatement ps = con.prepareStatement("DELETE FROM Trainings WHERE ID_training = ?;");
+			PreparedStatement ps = con.prepareStatement("DELETE FROM Trainings WHERE ID_training = ?");
 			finishedTrainings train = table.getSelectionModel().getSelectedItem();
 			ps.setString(1, train.getId());
+			ps.executeUpdate();
+			System.out.print(train.getExerciseID());
+			ps = con.prepareStatement("DELETE FROM PastTrainings WHERE trainingNr = ?");
+			ps.setInt(1, train.getExerciseID());
+
 			ps.executeUpdate();
 			ps.close();
 			con.close();
@@ -714,30 +787,36 @@ public class Controller {
 	}
 
 	public void Show_TrainingAll(ActionEvent event) {
-		String done = "";
 		try {
-			done = table.getSelectionModel().getSelectedItem().name;
-		} catch (Exception e) {
-			System.out.print("B³¹d" + e);
-		}
-		String[] words = done.split(";");
-		try {
-			if (!done.equals("")) {
-				Show_Training_Table.setVisible(true);
-				btn_hideTraining.setVisible(true);
-				Show_Training_Table.setText(
-						"Twój trening z dnia \"" + table.getSelectionModel().getSelectedItem().date + "\" to:\n\n");
-				for (int i = 0; i < words.length; i++) {
-					String[] wordsInside = words[i].split("\\,");
-					Show_Training_Table.appendText("Æwiczenie nr." + (i + 1) + ":\t\t\t" + wordsInside[0] + "\n");
-					Show_Training_Table.appendText("Serie x powtórzenia:\t" + wordsInside[1] + "\n");
-					Show_Training_Table.appendText("Ciê¿ar:\t\t\t\t" + wordsInside[2] + "\n");
-					Show_Training_Table.appendText("Czas na przerwê:\t\t" + wordsInside[3] + "\n\n");
-				}
+			Main_obslist.clear();
+			Connection con = ds.getConnection();
+			finishedTrainings train = table.getSelectionModel().getSelectedItem();
+			ResultSet rs = con.createStatement().executeQuery(
+					"SELECT Trainings.Date, PastTrainings.* FROM Trainings INNER JOIN PastTrainings ON Trainings.Name = PastTrainings.trainingNr WHERE trainingNr="
+							+ train.getExerciseID() + "");
+
+			while (rs.next()) {
+				Main_obslist.add(new finishedTrainings(rs.getString("trainingNr"), rs.getString("Date"),
+						rs.getString("exercise"), rs.getString("weight"), rs.getString("SxR"), rs.getString("time")));
 			}
-		} catch (Exception e) {
+			rs.close();
+			con.close();
+			Show_Training_Table.setVisible(true);
+			btn_hideTraining.setVisible(true);
+			Show_Training_Table.setText(
+					"Twój trening z dnia \"" + table.getSelectionModel().getSelectedItem().date + "\" to:\n\n");
+			for (int i = 0; i < Main_obslist.size(); i++) {
+				Show_Training_Table
+						.appendText("Æwiczenie nr." + (i + 1) + ":\t\t\t" + Main_obslist.get(i).getExercise() + "\n");
+				Show_Training_Table.appendText("Serie x powtórzenia:\t" + Main_obslist.get(i).SxR + "\n");
+				Show_Training_Table.appendText("Ciê¿ar:\t\t\t\t" + Main_obslist.get(i).weight + "\n");
+				Show_Training_Table.appendText("Czas na przerwê:\t\t" + Main_obslist.get(i).time + "\n\n");
+			}
+		} catch (SQLException e) {
 			System.out.print("B³¹d" + e);
+		} catch (Exception e) {
 		}
+
 	}
 
 	public void Hide_Training(ActionEvent event) {
@@ -749,15 +828,16 @@ public class Controller {
 		table.getItems().clear();
 		try {
 			Connection con = ds.getConnection();
-			ResultSet rs = con.createStatement().executeQuery("Select * from Trainings");
+			ResultSet rs = con.createStatement().executeQuery(
+					"Select ID_training,Date,Name, trainingNr,  GROUP_CONCAT(exercise) AS AllTraining from PastTrainings INNER JOIN Trainings ON PastTrainings.trainingNr = Trainings.Name  Group BY ID_training");
 			while (rs.next()) {
-				obslist.add(
-						new finishedTrainings(rs.getString("ID_training"), rs.getString("Date"), rs.getString("Name")));
+				obslist.add(new finishedTrainings(rs.getString("ID_training"), rs.getString("Date"),
+						rs.getString("AllTraining"), rs.getInt("trainingNr")));
 			}
 			rs.close();
 			con.close();
 		} catch (SQLException e) {
-			System.out.print("B³¹d");
+			System.out.print("B³¹d" + e);
 		}
 
 		dateCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDate()));
@@ -765,19 +845,7 @@ public class Controller {
 
 		table.setItems(obslist);
 	}
-
-	public void Delete_TrainingAll() {
-		try {
-			Connection con = ds.getConnection();
-			PreparedStatement ps = con.prepareStatement("DELETE FROM Trainings;");
-			ps.executeUpdate();
-			ps.close();
-			con.close();
-		} catch (SQLException e) {
-			System.out.print("B³¹d" + e);
-		}
-		LoadTableView();
-	}
+	
 
 	// Zmiana okna
 	public void MainClick(ActionEvent event) {
